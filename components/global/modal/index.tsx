@@ -51,7 +51,7 @@ export const Dialog = ({ init, content, button, options }: DialogProps) => {
     <dialog
       ref={ref}
       className={clsx({
-        "rounded-md p-0 shadow-md": true,
+        "w-[410px] rounded-md p-0 shadow-md": true,
         "backdrop:backdrop-blur-sm": options?.blur,
       })}
     >
