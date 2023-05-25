@@ -11,7 +11,7 @@ export const PrimaryButton = ({ label, ...props }: ButtonProps) => {
     <button
       {...props}
       className={clsx([
-        "btn-primary btn-sm btn flex-1 normal-case text-white xs:btn-md",
+        "btn-primary btn-sm btn flex-1 rounded-xl normal-case text-white",
         props.className,
       ])}
     >
