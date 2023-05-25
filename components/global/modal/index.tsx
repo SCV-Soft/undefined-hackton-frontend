@@ -51,8 +51,8 @@ export const Dialog = ({ init, content, button, options }: DialogProps) => {
     <dialog
       ref={ref}
       className={clsx({
-        "w-[410px] rounded-md p-0 shadow-md": true,
-        "backdrop:backdrop-blur-sm": options?.blur,
+        "w-[400px] rounded-md p-0 shadow-md": true,
+        "backdrop:backdrop-blur-xs": options?.blur,
       })}
     >
       {/* modal content */}
