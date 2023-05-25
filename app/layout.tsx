@@ -1,7 +1,7 @@
 import { ToastContainer } from "@/components/global/toast";
 import { PropsWithChildren } from "react";
-import "@/styles/global.css";
-import "@/styles/tailwindcss.css";
+import "styles/globals.css";
+import "styles/tailwindcss.css";
 
 export const metadata = {
   title: "Layer Bridge Protocol",
@@ -11,8 +11,10 @@ export const metadata = {
 export default function RootLayout({ children }: PropsWithChildren) {
   return (
     <html lang="en">
-      <body>{children}</body>
-      <ToastContainer />
+      <body>
+        {children}
+        <ToastContainer />
+      </body>
     </html>
   );
 }
