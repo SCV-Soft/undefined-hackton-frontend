@@ -36,12 +36,14 @@ export const Swap = ({ target }: { target: string }) => {
             <Image src={EthereumSvg} width={14} height={14} alt="ethereum" />
           }
           right={
-            <button
-              onClick={handleMax}
-              className="btn-ghost btn-xs btn rounded-full bg-blue-500 text-white hover:bg-blue-600"
-            >
-              Max
-            </button>
+            signer && (
+              <button
+                onClick={handleMax}
+                className="btn-ghost btn-xs btn rounded-full bg-blue-500 text-white hover:bg-blue-600"
+              >
+                Max
+              </button>
+            )
           }
           placeholder={target + " Amount"}
         />
