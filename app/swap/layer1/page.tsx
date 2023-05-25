@@ -3,7 +3,15 @@ import { FaSync } from "react-icons/fa";
 import { Swap } from "components/app/swap";
 import { Header } from "components/common";
 
-export default function Layer1Page() {
+interface Layer1PageProps {
+  searchParams: {
+    target: string;
+  };
+}
+
+export default function Layer1Page({ searchParams }: Layer1PageProps) {
+  const target = searchParams?.target?.toUpperCase() ?? "";
+
   return (
     <div className="flex flex-col gap-4">
       <Header
@@ -13,13 +21,13 @@ export default function Layer1Page() {
             <span className="flex items-center gap-2 text-lg">
               vETH
               <FaSync />
-              ETH
+              {target}
             </span>
           </div>
         }
-        subtitle="Swap ETH to vETH the next generation LSD Token"
+        subtitle={`Swap ${target} to vETH the next generation LSD Token`}
       />
-      <Swap />
+      <Swap target={target} />
     </div>
   );
 }
