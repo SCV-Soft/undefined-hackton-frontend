@@ -75,9 +75,12 @@ export const Infos = ({ data }: InfosProps) => {
     <div className="flex flex-col gap-1">
       {data.map(([title, value]) => {
         return (
-          <dl key={`info-${title}-${value}`} className="flex justify-between">
-            <dt className="text-sm font-semibold text-black/50">{title}</dt>
-            <dd className="text-sm font-black text-black">{value}</dd>
+          <dl
+            key={`info-${title}-${value}`}
+            className="flex justify-between text-sm font-medium"
+          >
+            <dt className="text-black/50">{title}</dt>
+            <dd className="text-black/80">{value}</dd>
           </dl>
         );
       })}
