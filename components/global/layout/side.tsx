@@ -7,6 +7,8 @@ import { FaSync } from "react-icons/fa";
 
 import { Logo } from "../logo";
 
+import { Balance } from "./balance";
+
 import { useTBD } from "hooks/useTBD";
 
 export const Menu = () => {
@@ -112,9 +114,14 @@ export const Menu = () => {
 export const Side = () => {
   return (
     <aside className="h-screen px-10 py-8 shadow-xl">
-      <Logo />
-      <div className="py-8">
-        <Menu />
+      <div className="flex h-full flex-col gap-8">
+        <Logo />
+        <div className="grow">
+          <Menu />
+        </div>
+        <div className="pb-8 pl-4">
+          <Balance />
+        </div>
       </div>
     </aside>
   );
