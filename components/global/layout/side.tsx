@@ -1,6 +1,7 @@
 "use client";
 
 import clsx from "clsx";
+import { useAtomValue } from "jotai";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { FaSync } from "react-icons/fa";
@@ -9,6 +10,7 @@ import { Logo } from "../logo";
 
 import { Balance } from "./balance";
 
+import { WEB3_SIGNER } from "atom/web3/signer/state";
 import { useTBD } from "hooks/useTBD";
 
 export const Menu = () => {
@@ -112,6 +114,8 @@ export const Menu = () => {
 };
 
 export const Side = () => {
+  const signer = useAtomValue(WEB3_SIGNER);
+
   return (
     <aside className="h-screen px-10 py-8 shadow-xl">
       <div className="flex h-full flex-col gap-8">
@@ -119,9 +123,11 @@ export const Side = () => {
         <div className="grow">
           <Menu />
         </div>
-        <div className="pb-8 pl-4">
-          <Balance />
-        </div>
+        {signer && (
+          <div className="pb-8 pl-4">
+            <Balance />
+          </div>
+        )}
       </div>
     </aside>
   );
