@@ -23,7 +23,7 @@ export default function Layer2Page({ searchParams }: Layer2PageProps) {
         }
         subtitle="Swap WETH to vETH the next generation LSD Token"
       />
-      <Layer2Swap target={target} />
+      <Layer2Swap />
     </div>
   );
 }
