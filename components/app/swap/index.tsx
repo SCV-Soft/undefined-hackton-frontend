@@ -9,12 +9,10 @@ import { Button, Card, Infos, Input, MyInfos } from "components/common";
 import { ConnectButton } from "components/global/button/connect";
 import EthereumSvg from "public/icon/eth.svg";
 
-export const Swap = ({ target: _target }: { target: string }) => {
+export const Swap = ({ target }: { target: string }) => {
   const [input, setInput] = useState("");
   const signer = useAtomValue(WEB3_SIGNER);
   const { address } = useAtomValue(SIGNER_INFOS);
-
-  const target = _target?.toUpperCase() ?? "";
 
   return (
     <Card className="flex flex-col gap-4">
