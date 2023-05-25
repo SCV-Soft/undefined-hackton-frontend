@@ -3,11 +3,12 @@
 import { ethers } from "ethers";
 import { useAtomValue } from "jotai";
 import Image from "next/image";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 import L1_SWAP_ABI from "abis/l1swap.json";
 import WETH_ABI from "abis/weth.json";
+import { WEB3_PROVIDERS } from "atom/web3/providers/state";
 import { SIGNER_INFOS, WEB3_SIGNER } from "atom/web3/signer/state";
 import { Button, Card, Infos, Input, MyInfos } from "components/common";
 import { ConnectButton } from "components/global/button/connect";
@@ -19,14 +20,27 @@ const L1_WETH_ADDRESS = "0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6";
 export const Layer1Swap = ({ target }: { target: string }) => {
   const signer = useAtomValue(WEB3_SIGNER);
   const { address } = useAtomValue(SIGNER_INFOS);
+  const providers = useAtomValue(WEB3_PROVIDERS);
 
   const [input, setInput] = useState("");
   const [balance, setBalance] = useState("0");
 
-  const handleMax = () => {
-    // todo: get max amount
-    setInput("123000");
-  };
+  const updateBalance = useCallback(async () => {
+    const provider = providers?.["ethereum"];
+    if (!signer || !provider) return;
+    const weth = new ethers.Contract(L1_WETH_ADDRESS, WETH_ABI, provider);
+
+    const [ethBalance, wethBalance] = await Promise.all([
+      provider.getBalance(address),
+      weth.balanceOf(address),
+    ]);
+
+    setBalance(
+      ethers.utils.formatEther(target === "ETH" ? ethBalance : wethBalance)
+    );
+  }, [address, providers, signer, target]);
+
+  const handleMax = () => setInput(balance);
 
   const handleSwap = async () => {
     if (!signer) return toast.error("Please connect your wallet first");
@@ -39,8 +53,10 @@ export const Layer1Swap = ({ target }: { target: string }) => {
         await l1swap.ethSwap({ value: amount });
       } else if (target === "WETH") {
         const weth = new ethers.Contract(L1_WETH_ADDRESS, WETH_ABI, signer);
-        await weth.approve(L1_SWAP_ADDRESS, amount);
-        await l1swap.wethSwap(amount);
+        await (
+          await weth.approve(L1_SWAP_ADDRESS, ethers.constants.MaxUint256)
+        ).wait();
+        await (await l1swap.wethSwap(amount)).wait();
       } else {
         return toast.error("Invalid target");
       }
@@ -50,11 +66,16 @@ export const Layer1Swap = ({ target }: { target: string }) => {
     }
   };
 
+  useEffect(() => {
+    updateBalance();
+    return () => setBalance("0");
+  }, [signer, updateBalance]);
+
   return (
     <Card className="flex flex-col gap-4">
       {signer && (
         <div>
-          <MyInfos address={address} available="123,000" baseSymbol={target} />
+          <MyInfos address={address} available={balance} baseSymbol={target} />
           <div className="divider !mb-1 before:bg-black/50 after:bg-black/50" />
         </div>
       )}
