@@ -1,7 +1,7 @@
 import { ToastContainer } from "@/components/global/toast";
 import { PropsWithChildren } from "react";
-import "@styles/global.css";
-import "@styles/tailwindcss.css";
+import "@/styles/global.css";
+import "@/styles/tailwindcss.css";
 
 export const metadata = {
   title: "Layer Bridge Protocol",
