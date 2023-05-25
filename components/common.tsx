@@ -111,8 +111,8 @@ export const MyInfos = ({ baseSymbol, available, address }: MyInfosProps) => {
           height={24}
           alt="jazzicon"
         />
-        <span className="px-2 text-xs font-semibold text-white">
-          {address.slice(0, 6)}...{address.slice(-4)}
+        <span className="pl-2 pr-3 text-xs font-semibold text-white">
+          {address.slice(0, 6)}...{address.slice(-6)}
         </span>
       </div>
     </div>
