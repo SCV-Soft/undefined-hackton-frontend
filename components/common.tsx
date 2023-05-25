@@ -100,7 +100,8 @@ export const MyInfos = ({ baseSymbol, available, address }: MyInfosProps) => {
       <div className="flex flex-col gap-2">
         <h1 className="font-medium text-black/50">Available to Swap</h1>
         <p className="text-2xl font-semibold">
-          {available} {baseSymbol}
+          {available.length > 10 ? available.slice(0, 10) + "..." : available}{" "}
+          {baseSymbol}
         </p>
       </div>
       <div className="flex items-center rounded-full bg-stone-600">
