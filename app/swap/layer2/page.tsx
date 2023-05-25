@@ -1,13 +1,13 @@
 import { Layer2Swap } from "components/app/layer2";
 import { Header } from "components/common";
 
-interface Layer1PageProps {
+interface Layer2PageProps {
   searchParams: {
     target: string;
   };
 }
 
-export default function Layer1Page({ searchParams }: Layer1PageProps) {
+export default function Layer2Page({ searchParams }: Layer2PageProps) {
   const target = searchParams?.target?.toUpperCase() ?? "";
 
   return (
