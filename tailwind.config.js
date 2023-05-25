@@ -13,7 +13,7 @@ module.exports = {
         tertiary: "#3C3C3C",
         base: {
           color: "#E7E2D4",
-          font: "#3C3C3C",
+          font: "#000000",
         },
       },
       screens: {
@@ -26,6 +26,14 @@ module.exports = {
         "3xl": "1920px",
       }
     },
+  },
+  daisyui: {
+    themes: [{
+      "mytheme": {
+        primary: "#3454C6",
+        "base-100": "#E7E2D4",
+      }
+    },],
   },
   plugins: [require("daisyui")],
 }
