@@ -9,16 +9,18 @@ import { Button, Card, Infos, Input, MyInfos } from "components/common";
 import { ConnectButton } from "components/global/button/connect";
 import EthereumSvg from "public/icon/eth.svg";
 
-export const Swap = () => {
+export const Swap = ({ target: _target }: { target: string }) => {
   const [input, setInput] = useState("");
   const signer = useAtomValue(WEB3_SIGNER);
   const { address } = useAtomValue(SIGNER_INFOS);
+
+  const target = _target?.toUpperCase() ?? "";
 
   return (
     <Card className="flex flex-col gap-4">
       {signer && (
         <div>
-          <MyInfos address={address} available="123,000" baseSymbol="ETH" />
+          <MyInfos address={address} available="123,000" baseSymbol={target} />
           <div className="divider !mb-1 before:bg-black/50 after:bg-black/50" />
         </div>
       )}
@@ -35,7 +37,7 @@ export const Swap = () => {
               Max
             </button>
           }
-          placeholder="ETH Amount"
+          placeholder={target + " Amount"}
         />
         {!signer ? <ConnectButton /> : <Button label="Swap" />}
       </div>
