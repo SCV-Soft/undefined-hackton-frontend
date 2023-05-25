@@ -1,3 +1,5 @@
+import { redirect } from "next/navigation";
+
 export default function Home() {
-  return <div className="text-primary">hello lsp</div>;
+  return redirect("/swap/layer1?target=eth");
 }
