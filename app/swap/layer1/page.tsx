@@ -1,6 +1,6 @@
 import { FaSync } from "react-icons/fa";
 
-import { Swap } from "components/app/swap";
+import { Layer1Swap } from "components/app/layer1";
 import { Header } from "components/common";
 
 interface Layer1PageProps {
@@ -27,7 +27,7 @@ export default function Layer1Page({ searchParams }: Layer1PageProps) {
         }
         subtitle={`Swap ${target} to vETH the next generation LSD Token`}
       />
-      <Swap target={target} />
+      <Layer1Swap target={target} />
     </div>
   );
 }
