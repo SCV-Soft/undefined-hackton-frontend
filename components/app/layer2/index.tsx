@@ -1,13 +1,18 @@
 "use client";
 
+import { ethers } from "ethers";
 import { useAtomValue } from "jotai";
-import Image from "next/image";
-import WETHSvg from "public/icon/weth.svg";
 import { useState } from "react";
+import { toast } from "react-toastify";
 
+import L2_SWAP_ABI from "abis/l2swap.json";
+import WETH_ABI from "abis/weth.json";
 import { SIGNER_INFOS, WEB3_SIGNER } from "atom/web3/signer/state";
 import { Button, Card, Infos, Input, MyInfos } from "components/common";
 import { ConnectButton } from "components/global/button/connect";
+
+const L2_SWAP_ADDRESS = "0xDA49F943Be939Ef9eE1BdaB3C9D1644Baae763bb";
+const L2_WETH_ADDRESS = "0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa";
 
 export const Layer2Swap = ({ target }: { target: string }) => {
   const [input, setInput] = useState("");
@@ -19,7 +24,21 @@ export const Layer2Swap = ({ target }: { target: string }) => {
     setInput("123000");
   };
 
-  const handleSwap = () => {};
+  const handleSwap = async () => {
+    if (!signer) return toast.error("Please connect your wallet first");
+    const amount = ethers.utils.parseEther(input);
+
+    try {
+      const l2swap = new ethers.Contract(L2_SWAP_ADDRESS, L2_SWAP_ABI, signer);
+      const weth = new ethers.Contract(L2_WETH_ADDRESS, WETH_ABI, signer);
+      await weth.approve(L2_SWAP_ADDRESS, amount);
+      await l2swap.swap(amount);
+      toast.success("Success to swap");
+    } catch (e) {
+      toast.error("Transaction failed");
+      console.error(e);
+    }
+  };
 
   return (
     <Card className="flex flex-col gap-4">
