@@ -7,8 +7,10 @@ import { FaSync } from "react-icons/fa";
 
 import { Logo } from "../logo";
 
+import { useTBD } from "hooks/useTBD";
+
 export const Menu = () => {
-  const openTBD = () => {};
+  const { openTBD } = useTBD();
 
   const path = usePathname();
   const target = useSearchParams().get("target");
