@@ -117,14 +117,14 @@ export const Side = () => {
   const signer = useAtomValue(WEB3_SIGNER);
 
   return (
-    <aside className="h-screen px-10 py-8 shadow-xl">
+    <aside className="min-h-screen px-10 py-8 shadow-xl">
       <div className="flex h-full flex-col gap-8">
         <Logo />
         <div className="grow">
           <Menu />
         </div>
         {signer && (
-          <div className="pb-8 pl-4">
+          <div className="py-6 pl-6">
             <Balance />
           </div>
         )}
