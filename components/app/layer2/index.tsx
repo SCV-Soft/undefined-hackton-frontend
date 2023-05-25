@@ -15,11 +15,11 @@ const L2_SWAP_ADDRESS = "0xDA49F943Be939Ef9eE1BdaB3C9D1644Baae763bb";
 const L2_WETH_ADDRESS = "0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa";
 
 export const Layer2Swap = () => {
-  const [input, setInput] = useState("");
-  const [balance, setBalance] = useState("0");
-
   const signer = useAtomValue(WEB3_SIGNER);
   const { address } = useAtomValue(SIGNER_INFOS);
+
+  const [input, setInput] = useState("");
+  const [balance, setBalance] = useState("0");
 
   const handleMax = () => {
     // todo: get max amount
