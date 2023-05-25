@@ -9,7 +9,7 @@ import { Button, Card, Infos, Input, MyInfos } from "components/common";
 import { ConnectButton } from "components/global/button/connect";
 import LogoSvg from "public/logo.svg";
 
-export const BridgeSwap = ({ target }: { target: string }) => {
+export const BridgeSwap = () => {
   const [input, setInput] = useState("");
   const signer = useAtomValue(WEB3_SIGNER);
   const { address } = useAtomValue(SIGNER_INFOS);
@@ -58,6 +58,7 @@ export const BridgeSwap = ({ target }: { target: string }) => {
           ["You will receive", "1.1424 vETH"],
           ["Exchange rate", "1 ETH = 0.95 vETH"],
           ["Max transaction cost", "$ 10.84"],
+          ["Reward fee", "0.025 svETH"],
         ]}
       />
     </Card>
