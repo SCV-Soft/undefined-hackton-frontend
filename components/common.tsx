@@ -57,7 +57,7 @@ export const Card = ({
   return (
     <div
       className={clsx([
-        "w-[470px] border-2 border-black bg-white p-4",
+        "w-[470px] border-2 border-black bg-white px-4 py-6",
         className,
       ])}
     >
@@ -98,7 +98,7 @@ export const MyInfos = ({ baseSymbol, available, address }: MyInfosProps) => {
   return (
     <div className="flex items-center justify-between">
       <div className="flex flex-col gap-2">
-        <h1 className="font-medium text-black/50">Available to stake</h1>
+        <h1 className="font-medium text-black/50">Available to Swap</h1>
         <p className="text-2xl font-semibold">
           {available} {baseSymbol}
         </p>
