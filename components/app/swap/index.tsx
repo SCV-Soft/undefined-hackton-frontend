@@ -19,6 +19,8 @@ export const Swap = ({ target }: { target: string }) => {
     setInput("123000");
   };
 
+  const handleSwap = () => {};
+
   return (
     <Card className="flex flex-col gap-4">
       {signer && (
@@ -47,7 +49,11 @@ export const Swap = ({ target }: { target: string }) => {
           }
           placeholder={target + " Amount"}
         />
-        {!signer ? <ConnectButton /> : <Button label="Swap" />}
+        {!signer ? (
+          <ConnectButton />
+        ) : (
+          <Button onClick={handleSwap} label="Swap" />
+        )}
       </div>
       <Infos
         data={[
