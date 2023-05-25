@@ -59,6 +59,25 @@ export const Card = ({
   );
 };
 
+interface InfosProps {
+  data: [string, string][];
+}
+
+export const Infos = ({ data }: InfosProps) => {
+  return (
+    <div className="flex flex-col gap-1">
+      {data.map(([title, value]) => {
+        return (
+          <dl key={`info-${title}-${value}`} className="flex justify-between">
+            <dt className="text-sm font-semibold text-black/50">{title}</dt>
+            <dd className="text-sm font-black text-black">{value}</dd>
+          </dl>
+        );
+      })}
+    </div>
+  );
+};
+
 type HeaderProps = {
   title: ReactNode;
   subtitle: string;
