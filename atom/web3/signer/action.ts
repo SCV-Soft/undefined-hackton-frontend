@@ -9,8 +9,7 @@ export const UPDATE_WEB3_SIGNER = atom<
   void
 >(null, (_, set, signer) => set(WEB3_SIGNER, signer));
 
-export const UPDATE_SIGNER_INFOS = atom<
+export const UPDATE_SIGNER_INFOS = atom<null, [{ address: string }], void>(
   null,
-  [{ address: string } | null],
-  void
->(null, (_, set, infos) => set(SIGNER_INFOS, infos));
+  (_, set, infos) => set(SIGNER_INFOS, infos)
+);
