@@ -1,3 +1,3 @@
 export default function Home() {
-  return <div>hello lsp</div>;
+  return <div className="text-primary">hello lsp</div>;
 }

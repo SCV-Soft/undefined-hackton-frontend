@@ -3,6 +3,7 @@ import "styles/tailwindcss.css";
 
 import { PropsWithChildren } from "react";
 
+import { ModalContainer } from "components/global/modal/container";
 import { ToastContainer } from "components/global/toast";
 
 export const metadata = {
@@ -16,6 +17,7 @@ export default function RootLayout({ children }: PropsWithChildren) {
       <body>
         {children}
         <ToastContainer />
+        <ModalContainer />
       </body>
     </html>
   );
