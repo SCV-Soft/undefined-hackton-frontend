@@ -91,10 +91,7 @@ export const Menu = () => {
         );
       })}
       <div className="divider !my-1" />
-      {[
-        { href: "/bridge", label: "Bridge" },
-        { href: "/dashboard", label: "Dashboard" },
-      ].map(({ href, label }) => (
+      {[{ href: "/bridge", label: "Bridge" }].map(({ href, label }) => (
         <li key={href}>
           <Link
             className={clsx([
