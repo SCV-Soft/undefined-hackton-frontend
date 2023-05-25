@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  /* background color */
+  body {
+    @apply bg-base-color min-h-screen;
+  }
+}
+
 @layer components {
   /* number input */
   input[type="number"]::-webkit-inner-spin-button,
