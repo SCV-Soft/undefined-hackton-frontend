@@ -14,6 +14,11 @@ export const Swap = ({ target }: { target: string }) => {
   const signer = useAtomValue(WEB3_SIGNER);
   const { address } = useAtomValue(SIGNER_INFOS);
 
+  const handleMax = () => {
+    // todo: get max amount
+    setInput("123000");
+  };
+
   return (
     <Card className="flex flex-col gap-4">
       {signer && (
@@ -31,7 +36,10 @@ export const Swap = ({ target }: { target: string }) => {
             <Image src={EthereumSvg} width={14} height={14} alt="ethereum" />
           }
           right={
-            <button className="btn-ghost btn-xs btn rounded-full bg-blue-500 text-white hover:bg-blue-600">
+            <button
+              onClick={handleMax}
+              className="btn-ghost btn-xs btn rounded-full bg-blue-500 text-white hover:bg-blue-600"
+            >
               Max
             </button>
           }
