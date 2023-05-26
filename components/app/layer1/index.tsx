@@ -38,6 +38,12 @@ export const Layer1Swap = ({ target }: { target: string }) => {
     setBalance(
       ethers.utils.formatEther(target === "ETH" ? ethBalance : wethBalance)
     );
+
+    sessionStorage.setItem(
+      target === "ETH" ? "eth_balance" : "weth_balance",
+      ethers.utils.formatEther(target === "ETH" ? ethBalance : wethBalance)
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [address, providers, signer, target]);
 
   const handleMax = () => setInput(balance);
@@ -67,9 +73,18 @@ export const Layer1Swap = ({ target }: { target: string }) => {
   };
 
   useEffect(() => {
+    const cachedBalance =
+      target === "ETH"
+        ? sessionStorage.getItem("eth_balance")
+        : sessionStorage.getItem("weth_balance");
+    if (cachedBalance) setBalance(cachedBalance);
+
     updateBalance();
-    return () => setBalance("0");
-  }, [signer, updateBalance]);
+    return () => {
+      setBalance("0");
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [updateBalance]);
 
   return (
     <Card className="flex flex-col gap-4">
