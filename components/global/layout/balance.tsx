@@ -1,11 +1,19 @@
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
+import { useEffect } from "react";
 
+import { UPDATE_TOKENS } from "atom/web3/balance/action";
 import { L1_VETH, L2_VETH, SCETH } from "atom/web3/balance/state";
 
 export const Balance = () => {
   const L1vETH = useAtomValue(L1_VETH);
   const L2vETH = useAtomValue(L2_VETH);
   const scETH = useAtomValue(SCETH);
+
+  const updateTokens = useSetAtom(UPDATE_TOKENS);
+
+  useEffect(() => {
+    updateTokens();
+  }, [updateTokens]);
 
   return (
     <div className="flex flex-col gap-3">
