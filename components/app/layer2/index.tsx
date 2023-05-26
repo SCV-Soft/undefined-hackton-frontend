@@ -35,15 +35,30 @@ export const Layer2Swap = () => {
       const l2swap = new ethers.Contract(L2_SWAP_ADDRESS, L2_SWAP_ABI, signer);
       const weth = new ethers.Contract(L2_WETH_ADDRESS, WETH_ABI, signer);
 
+      const id = toast.loading("Waiting for approval");
       await (
         await weth.approve(L2_SWAP_ADDRESS, ethers.constants.MaxUint256)
       ).wait();
+
+      toast.update(id, {
+        render: "Approval confirmed",
+        type: "success",
+        isLoading: false,
+        autoClose: 2000,
+      });
+
+      const id2 = toast.loading("Waiting for swap");
       await (await l2swap.swap(amount)).wait();
+
+      toast.update(id2, {
+        render: "Swap confirmed",
+        type: "success",
+        isLoading: false,
+        autoClose: 2000,
+      });
 
       updateBalance();
       updateTokens();
-
-      toast.success("You have successfully swapped your WETH to vETH");
     } catch (e) {
       toast.error("Transaction failed");
       console.error(e);

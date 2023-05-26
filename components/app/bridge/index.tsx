@@ -45,9 +45,21 @@ export const BridgeSwap = () => {
     const amount = ethers.utils.parseEther(input);
     try {
       const veth = new ethers.Contract(L1_VETH_ADDRESS, VETH_ABI, signer);
+
+      const id = toast.loading("Waiting for approval");
+
       await (
         await veth.approve(L1_BRIDGE_ADDRESS, ethers.constants.MaxUint256)
       ).wait();
+
+      toast.update(id, {
+        render: "Approval confirmed",
+        type: "success",
+        isLoading: false,
+        autoClose: 2000,
+      });
+
+      const id2 = toast.loading("Waiting for transaction");
 
       const l1bridge = new ethers.Contract(
         L1_BRIDGE_ADDRESS,
@@ -65,10 +77,15 @@ export const BridgeSwap = () => {
         )
       ).wait();
 
+      toast.update(id2, {
+        render: "Transaction confirmed",
+        type: "success",
+        isLoading: false,
+        autoClose: 2000,
+      });
+
       updateBalance();
       updateTokens();
-
-      toast.success("Your vETH is on the way");
     } catch (e) {
       toast.error("Transaction failed");
       console.error(e);

@@ -55,24 +55,46 @@ export const Layer1Swap = ({ target }: { target: string }) => {
     const amount = ethers.utils.parseEther(input);
 
     try {
+      //do something else
+
       const l1swap = new ethers.Contract(L1_SWAP_ADDRESS, L1_SWAP_ABI, signer);
 
       if (target === "ETH") {
+        const id = toast.loading("Waiting for confirmation");
         await (await l1swap.ethSwap({ value: amount })).wait();
+        toast.update(id, {
+          render: "Transaction confirmed",
+          type: "success",
+          isLoading: false,
+          autoClose: 2000,
+        });
       } else if (target === "WETH") {
         const weth = new ethers.Contract(L1_WETH_ADDRESS, WETH_ABI, signer);
+        const id = toast.loading("Waiting for approval");
         await (
           await weth.approve(L1_SWAP_ADDRESS, ethers.constants.MaxUint256)
         ).wait();
+        toast.update(id, {
+          render: "Approval confirmed",
+          type: "success",
+          isLoading: false,
+          autoClose: 2000,
+        });
+
+        const id2 = toast.loading("Waiting for confirmation");
         await (await l1swap.wethSwap(amount)).wait();
+        toast.update(id2, {
+          render: "Transaction confirmed",
+          type: "success",
+          isLoading: false,
+          autoClose: 2000,
+        });
       } else {
         return toast.error("Invalid target");
       }
 
       updateBalance();
       updateTokens();
-
-      return toast.success("You have successfully swapped your ETH");
     } catch (e) {
       toast.error("Transaction failed");
       console.error(e);
