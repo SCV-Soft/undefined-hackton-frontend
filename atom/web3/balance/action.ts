@@ -29,9 +29,9 @@ export const UPDATE_TOKENS = atom(null, (get, set) => {
 
   Promise.all([l1_veth_balance, l2_veth_balance, sceth_balance]).then(
     ([l1_veth_balance, l2_veth_balance, sceth_balance]) => {
-      set(L1_VETH, l1_veth_balance);
-      set(L2_VETH, l2_veth_balance);
-      set(SCETH, sceth_balance);
+      set(L1_VETH, ethers.utils.formatEther(l1_veth_balance));
+      set(L2_VETH, ethers.utils.formatEther(l2_veth_balance));
+      set(SCETH, ethers.utils.formatEther(sceth_balance));
     }
   );
 });
