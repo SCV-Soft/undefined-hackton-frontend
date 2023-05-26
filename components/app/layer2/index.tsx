@@ -34,14 +34,15 @@ export const Layer2Swap = () => {
     try {
       const l2swap = new ethers.Contract(L2_SWAP_ADDRESS, L2_SWAP_ABI, signer);
       const weth = new ethers.Contract(L2_WETH_ADDRESS, WETH_ABI, signer);
-      const tx = await weth.approve(
-        L2_SWAP_ADDRESS,
-        ethers.constants.MaxUint256
-      );
-      await tx.wait();
+
+      await (
+        await weth.approve(L2_SWAP_ADDRESS, ethers.constants.MaxUint256)
+      ).wait();
       await (await l2swap.swap(amount)).wait();
+
       updateBalance();
       updateTokens();
+
       toast.success("You have successfully swapped your WETH to vETH");
     } catch (e) {
       toast.error("Transaction failed");

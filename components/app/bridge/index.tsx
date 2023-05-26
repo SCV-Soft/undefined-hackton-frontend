@@ -45,24 +45,26 @@ export const BridgeSwap = () => {
     const amount = ethers.utils.parseEther(input);
     try {
       const veth = new ethers.Contract(L1_VETH_ADDRESS, VETH_ABI, signer);
-      const tx = await veth.approve(
-        L1_BRIDGE_ADDRESS,
-        ethers.constants.MaxUint256
-      );
-      await tx.wait();
+      await (
+        await veth.approve(L1_BRIDGE_ADDRESS, ethers.constants.MaxUint256)
+      ).wait();
 
       const l1bridge = new ethers.Contract(
         L1_BRIDGE_ADDRESS,
         BRIDGE_ABI,
         signer
       );
-      await l1bridge.deposit(
-        L1_VETH_ADDRESS,
-        80001,
-        amount,
-        address,
-        await l1bridge.nonce(address)
-      );
+
+      await (
+        await l1bridge.deposit(
+          L1_VETH_ADDRESS,
+          80001,
+          amount,
+          address,
+          await l1bridge.nonce(address)
+        )
+      ).wait();
+
       updateBalance();
       updateTokens();
 
