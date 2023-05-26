@@ -63,6 +63,7 @@ export const Layer1Swap = ({ target }: { target: string }) => {
           await weth.approve(L1_SWAP_ADDRESS, ethers.constants.MaxUint256)
         ).wait();
         await (await l1swap.wethSwap(amount)).wait();
+        updateBalance();
       } else {
         return toast.error("Invalid target");
       }

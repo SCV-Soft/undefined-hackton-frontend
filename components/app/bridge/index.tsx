@@ -25,6 +25,14 @@ export const BridgeSwap = () => {
     sessionStorage.getItem("veth_balance") || "0"
   );
 
+  const updateBalance = useCallback(async () => {
+    if (!signer) return;
+
+    const veth = new ethers.Contract(L1_VETH_ADDRESS, VETH_ABI, signer);
+    const balance = await veth.balanceOf(address);
+    setBalance(ethers.utils.formatEther(balance));
+  }, [signer, address]);
+
   const handleMax = () => setInput(balance);
 
   const handleSwap = async () => {
@@ -53,20 +61,13 @@ export const BridgeSwap = () => {
         address,
         await l1bridge.nonce(address)
       );
+      updateBalance();
       toast.success("Your vETH is on the way");
     } catch (e) {
       toast.error("Transaction failed");
       console.error(e);
     }
   };
-
-  const updateBalance = useCallback(async () => {
-    if (!signer) return;
-
-    const veth = new ethers.Contract(L1_VETH_ADDRESS, VETH_ABI, signer);
-    const balance = await veth.balanceOf(address);
-    setBalance(ethers.utils.formatEther(balance));
-  }, [signer, address]);
 
   useEffect(() => {
     updateBalance();
