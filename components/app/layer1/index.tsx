@@ -1,13 +1,14 @@
 "use client";
 
 import { ethers } from "ethers";
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 import L1_SWAP_ABI from "abis/l1swap.json";
 import WETH_ABI from "abis/weth.json";
+import { UPDATE_TOKENS } from "atom/web3/balance/action";
 import { WEB3_PROVIDERS } from "atom/web3/providers/state";
 import { SIGNER_INFOS, WEB3_SIGNER } from "atom/web3/signer/state";
 import { Button, Card, Infos, Input, MyInfos } from "components/common";
@@ -21,6 +22,7 @@ export const Layer1Swap = ({ target }: { target: string }) => {
   const signer = useAtomValue(WEB3_SIGNER);
   const { address } = useAtomValue(SIGNER_INFOS);
   const providers = useAtomValue(WEB3_PROVIDERS);
+  const updateTokens = useSetAtom(UPDATE_TOKENS);
 
   const [input, setInput] = useState("");
   const [balance, setBalance] = useState("0");
@@ -64,6 +66,9 @@ export const Layer1Swap = ({ target }: { target: string }) => {
         ).wait();
         await (await l1swap.wethSwap(amount)).wait();
         updateBalance();
+        updateTokens();
+
+        return toast.success("You have successfully swapped your ETH");
       } else {
         return toast.error("Invalid target");
       }

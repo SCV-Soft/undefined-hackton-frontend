@@ -1,12 +1,13 @@
 "use client";
 
 import { ethers } from "ethers";
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 import L2_SWAP_ABI from "abis/l2swap.json";
 import WETH_ABI from "abis/weth.json";
+import { UPDATE_TOKENS } from "atom/web3/balance/action";
 import { WEB3_PROVIDERS } from "atom/web3/providers/state";
 import { SIGNER_INFOS, WEB3_SIGNER } from "atom/web3/signer/state";
 import { Button, Card, Infos, Input, MyInfos } from "components/common";
@@ -19,6 +20,7 @@ export const Layer2Swap = () => {
   const signer = useAtomValue(WEB3_SIGNER);
   const { address } = useAtomValue(SIGNER_INFOS);
   const provider = useAtomValue(WEB3_PROVIDERS)?.["polygon"];
+  const updateTokens = useSetAtom(UPDATE_TOKENS);
 
   const [input, setInput] = useState("");
   const [balance, setBalance] = useState("0");
@@ -38,7 +40,9 @@ export const Layer2Swap = () => {
       );
       await tx.wait();
       await (await l2swap.swap(amount)).wait();
-      toast.success("Success to swap");
+      updateBalance();
+      updateTokens();
+      toast.success("You have successfully swapped your WETH to vETH");
     } catch (e) {
       toast.error("Transaction failed");
       console.error(e);

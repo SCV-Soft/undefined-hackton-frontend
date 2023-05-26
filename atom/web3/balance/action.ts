@@ -12,7 +12,7 @@ const SCETH_ADDRESS = "0x153fab4B5E067724B4387713ABfBB6Eb581119d6";
 
 const balanceOfAbi = ["function balanceOf(address) view returns (uint256)"];
 
-export const UPDATE_TOKENS = atom(null, (get, set, _) => {
+export const UPDATE_TOKENS = atom(null, (get, set) => {
   const { address } = get(SIGNER_INFOS);
   const { ethereum, polygon } = get(WEB3_PROVIDERS) ?? {};
   const signer = get(WEB3_SIGNER);
