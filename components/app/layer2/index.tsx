@@ -90,11 +90,7 @@ export const Layer2Swap = () => {
     (async () => {
       await window.ethereum.request({
         method: "wallet_switchEthereumChain",
-        params: [
-          {
-            chainId: "0x" + (80001).toString(16),
-          },
-        ],
+        params: [{ chainId: "0x" + (80001).toString(16) }],
       });
     })();
   }, []);

@@ -117,11 +117,7 @@ export const Layer1Swap = ({ target }: { target: string }) => {
     (async () => {
       await window.ethereum.request({
         method: "wallet_switchEthereumChain",
-        params: [
-          {
-            chainId: "0x" + (5).toString(16),
-          },
-        ],
+        params: [{ chainId: "0x" + (5).toString(16) }],
       });
     })();
   }, []);
