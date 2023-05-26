@@ -3,7 +3,7 @@
 import { ethers } from "ethers";
 import { useAtomValue } from "jotai";
 import Image from "next/image";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 import BRIDGE_ABI from "abis/bridge.json";
@@ -21,13 +21,11 @@ export const BridgeSwap = () => {
   const { address } = useAtomValue(SIGNER_INFOS);
 
   const [input, setInput] = useState("");
-  // todo: get balance from api
-  const [balance, setBalance] = useState("0");
+  const [balance, setBalance] = useState(
+    sessionStorage.getItem("veth_balance") || "0"
+  );
 
-  const handleMax = () => {
-    // todo: get max amount
-    setInput("123000");
-  };
+  const handleMax = () => setInput(balance);
 
   const handleSwap = async () => {
     if (!signer) return toast.error("Please connect your wallet first");
@@ -62,11 +60,27 @@ export const BridgeSwap = () => {
     }
   };
 
+  const updateBalance = useCallback(async () => {
+    if (!signer) return;
+
+    const veth = new ethers.Contract(L1_VETH_ADDRESS, VETH_ABI, signer);
+    const balance = await veth.balanceOf(address);
+    setBalance(ethers.utils.formatEther(balance));
+  }, [signer, address]);
+
+  useEffect(() => {
+    updateBalance();
+    return () => {
+      sessionStorage.setItem("veth_balance", balance);
+      setBalance("0");
+    };
+  }, [balance, updateBalance]);
+
   return (
     <Card className="flex flex-col gap-4">
       {signer && (
         <div>
-          <MyInfos address={address} available="123,000" baseSymbol="vETH" />
+          <MyInfos address={address} available={balance} baseSymbol="vETH" />
           <div className="divider !mb-1 before:bg-black/50 after:bg-black/50" />
         </div>
       )}
