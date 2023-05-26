@@ -26,6 +26,13 @@ export const ConnectButton = ({
       try {
         await window.ethereum.request({ method: "eth_requestAccounts" });
 
+        window.ethereum.on("chainChanged", (chainId: string) => {
+          const signer = new ethers.providers.Web3Provider(
+            window.ethereum
+          ).getSigner();
+          setSigner(signer);
+        });
+
         const signer = new ethers.providers.Web3Provider(
           window.ethereum
         ).getSigner();
