@@ -49,8 +49,9 @@ export const Layer2Swap = () => {
     if (!provider || !signer) return;
 
     const weth = new ethers.Contract(L2_WETH_ADDRESS, WETH_ABI, provider);
-    const balance = await weth.balanceOf(address);
-    setBalance(ethers.utils.formatEther(balance));
+    const _balance = await weth.balanceOf(address);
+    const balance = ethers.utils.formatEther(_balance);
+    setBalance(balance);
     sessionStorage.setItem("l2_weth_balance", balance);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [address, signer, provider]);

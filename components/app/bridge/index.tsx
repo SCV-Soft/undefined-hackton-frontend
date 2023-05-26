@@ -29,8 +29,9 @@ export const BridgeSwap = () => {
     if (!signer || !provider) return;
 
     const veth = new ethers.Contract(L1_VETH_ADDRESS, VETH_ABI, provider);
-    const balance = await veth.balanceOf(address);
-    setBalance(ethers.utils.formatEther(balance));
+    const _balance = await veth.balanceOf(address);
+    const balance = ethers.utils.formatEther(_balance);
+    setBalance(balance);
     sessionStorage.setItem("veth_balance", balance);
   }, [address, provider, signer]);
 
