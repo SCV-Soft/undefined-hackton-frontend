@@ -27,6 +27,7 @@ export const UPDATE_TOKENS = atom(null, (get, set) => {
   const l2_veth_balance = l2_veth.balanceOf(address);
   const sceth_balance = sceth.balanceOf(address);
 
+  // try two times to get the balance, gap between two times is 1s
   Promise.all([l1_veth_balance, l2_veth_balance, sceth_balance]).then(
     ([l1_veth_balance, l2_veth_balance, sceth_balance]) => {
       set(L1_VETH, ethers.utils.formatEther(l1_veth_balance));
@@ -34,4 +35,14 @@ export const UPDATE_TOKENS = atom(null, (get, set) => {
       set(SCETH, ethers.utils.formatEther(sceth_balance));
     }
   );
+
+  setTimeout(() => {
+    Promise.all([l1_veth_balance, l2_veth_balance, sceth_balance]).then(
+      ([l1_veth_balance, l2_veth_balance, sceth_balance]) => {
+        set(L1_VETH, ethers.utils.formatEther(l1_veth_balance));
+        set(L2_VETH, ethers.utils.formatEther(l2_veth_balance));
+        set(SCETH, ethers.utils.formatEther(sceth_balance));
+      }
+    );
+  }, 1000);
 });
