@@ -103,6 +103,21 @@ export const BridgeSwap = () => {
   };
 
   useEffect(() => {
+    if (!window.ethereum) return;
+
+    (async () => {
+      await window.ethereum.request({
+        method: "wallet_switchEthereumChain",
+        params: [
+          {
+            chainId: "0x" + (5).toString(16),
+          },
+        ],
+      });
+    })();
+  }, []);
+
+  useEffect(() => {
     const cachedBalance = sessionStorage.getItem("veth_balance");
     if (cachedBalance) setBalance(cachedBalance);
     updateBalance();

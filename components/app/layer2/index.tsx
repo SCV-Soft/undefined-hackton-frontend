@@ -85,6 +85,21 @@ export const Layer2Swap = () => {
   }, [address, signer, provider]);
 
   useEffect(() => {
+    if (!window.ethereum) return;
+
+    (async () => {
+      await window.ethereum.request({
+        method: "wallet_switchEthereumChain",
+        params: [
+          {
+            chainId: "0x" + (80001).toString(16),
+          },
+        ],
+      });
+    })();
+  }, []);
+
+  useEffect(() => {
     const cachedBalance = sessionStorage.getItem("l2_weth_balance");
     if (cachedBalance) setBalance(cachedBalance);
 

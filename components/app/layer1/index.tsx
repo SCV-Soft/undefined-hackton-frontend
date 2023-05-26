@@ -112,6 +112,21 @@ export const Layer1Swap = ({ target }: { target: string }) => {
   };
 
   useEffect(() => {
+    if (!window.ethereum) return;
+
+    (async () => {
+      await window.ethereum.request({
+        method: "wallet_switchEthereumChain",
+        params: [
+          {
+            chainId: "0x" + (5).toString(16),
+          },
+        ],
+      });
+    })();
+  }, []);
+
+  useEffect(() => {
     const cachedBalance =
       target === "ETH"
         ? sessionStorage.getItem("eth_balance")
