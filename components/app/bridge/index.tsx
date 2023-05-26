@@ -4,7 +4,7 @@ import { ethers } from "ethers";
 import { useAtomValue, useSetAtom } from "jotai";
 import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
-import { toast } from "react-toastify";
+import { Id, toast } from "react-toastify";
 
 import BRIDGE_ABI from "abis/bridge.json";
 import VETH_ABI from "abis/veth.json";
@@ -43,29 +43,33 @@ export const BridgeSwap = () => {
     if (!signer) return toast.error("Please connect your wallet first");
 
     const amount = ethers.utils.parseEther(input);
+
+    let id1: Id | null = null;
+    let id2: Id | null = null;
+
     try {
       const veth = new ethers.Contract(L1_VETH_ADDRESS, VETH_ABI, signer);
 
-      const id = toast.loading("Waiting for approval");
+      id1 = toast.loading("Waiting for approval");
 
       await (
         await veth.approve(L1_BRIDGE_ADDRESS, ethers.constants.MaxUint256)
       ).wait();
 
-      toast.update(id, {
+      toast.update(id1, {
         render: "Approval confirmed",
         type: "success",
         isLoading: false,
         autoClose: 2000,
       });
 
-      const id2 = toast.loading("Waiting for transaction");
-
       const l1bridge = new ethers.Contract(
         L1_BRIDGE_ADDRESS,
         BRIDGE_ABI,
         signer
       );
+
+      id2 = toast.loading("Waiting for transaction");
 
       await (
         await l1bridge.deposit(
@@ -87,6 +91,8 @@ export const BridgeSwap = () => {
       updateBalance();
       updateTokens();
     } catch (e) {
+      if (id1) toast.dismiss(id1);
+      if (id2) toast.dismiss(id2);
       toast.error("Transaction failed");
       console.error(e);
     }

@@ -4,7 +4,7 @@ import { ethers } from "ethers";
 import { useAtomValue, useSetAtom } from "jotai";
 import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
-import { toast } from "react-toastify";
+import { Id, toast } from "react-toastify";
 
 import L1_SWAP_ABI from "abis/l1swap.json";
 import WETH_ABI from "abis/weth.json";
@@ -54,15 +54,19 @@ export const Layer1Swap = ({ target }: { target: string }) => {
     if (!signer) return toast.error("Please connect your wallet first");
     const amount = ethers.utils.parseEther(input);
 
+    let id1: Id | null = null;
+    let id2: Id | null = null;
+    let id3: Id | null = null;
+
     try {
       //do something else
 
       const l1swap = new ethers.Contract(L1_SWAP_ADDRESS, L1_SWAP_ABI, signer);
 
       if (target === "ETH") {
-        const id = toast.loading("Waiting for confirmation");
+        id1 = toast.loading("Waiting for confirmation");
         await (await l1swap.ethSwap({ value: amount })).wait();
-        toast.update(id, {
+        toast.update(id1, {
           render: "Transaction confirmed",
           type: "success",
           isLoading: false,
@@ -70,20 +74,20 @@ export const Layer1Swap = ({ target }: { target: string }) => {
         });
       } else if (target === "WETH") {
         const weth = new ethers.Contract(L1_WETH_ADDRESS, WETH_ABI, signer);
-        const id = toast.loading("Waiting for approval");
+        id2 = toast.loading("Waiting for approval");
         await (
           await weth.approve(L1_SWAP_ADDRESS, ethers.constants.MaxUint256)
         ).wait();
-        toast.update(id, {
+        toast.update(id2, {
           render: "Approval confirmed",
           type: "success",
           isLoading: false,
           autoClose: 2000,
         });
 
-        const id2 = toast.loading("Waiting for confirmation");
+        id3 = toast.loading("Waiting for confirmation");
         await (await l1swap.wethSwap(amount)).wait();
-        toast.update(id2, {
+        toast.update(id3, {
           render: "Transaction confirmed",
           type: "success",
           isLoading: false,
@@ -96,6 +100,9 @@ export const Layer1Swap = ({ target }: { target: string }) => {
       updateBalance();
       updateTokens();
     } catch (e) {
+      if (id1) toast.dismiss(id1);
+      if (id2) toast.dismiss(id2);
+      if (id3) toast.dismiss(id3);
       toast.error("Transaction failed");
       console.error(e);
     }

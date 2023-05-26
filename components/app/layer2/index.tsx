@@ -3,7 +3,7 @@
 import { ethers } from "ethers";
 import { useAtomValue, useSetAtom } from "jotai";
 import { useCallback, useEffect, useState } from "react";
-import { toast } from "react-toastify";
+import { Id, toast } from "react-toastify";
 
 import L2_SWAP_ABI from "abis/l2swap.json";
 import WETH_ABI from "abis/weth.json";
@@ -31,23 +31,26 @@ export const Layer2Swap = () => {
     if (!signer) return toast.error("Please connect your wallet first");
     const amount = ethers.utils.parseEther(input);
 
+    let id1: Id | null = null;
+    let id2: Id | null = null;
+
     try {
       const l2swap = new ethers.Contract(L2_SWAP_ADDRESS, L2_SWAP_ABI, signer);
       const weth = new ethers.Contract(L2_WETH_ADDRESS, WETH_ABI, signer);
 
-      const id = toast.loading("Waiting for approval");
+      id1 = toast.loading("Waiting for approval");
       await (
         await weth.approve(L2_SWAP_ADDRESS, ethers.constants.MaxUint256)
       ).wait();
 
-      toast.update(id, {
+      toast.update(id1, {
         render: "Approval confirmed",
         type: "success",
         isLoading: false,
         autoClose: 2000,
       });
 
-      const id2 = toast.loading("Waiting for swap");
+      id2 = toast.loading("Waiting for swap");
       await (await l2swap.swap(amount)).wait();
 
       toast.update(id2, {
@@ -60,6 +63,8 @@ export const Layer2Swap = () => {
       updateBalance();
       updateTokens();
     } catch (e) {
+      if (id1) toast.dismiss(id1);
+      if (id2) toast.dismiss(id2);
       toast.error("Transaction failed");
       console.error(e);
     }
