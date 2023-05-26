@@ -99,6 +99,9 @@ export const Layer1Swap = ({ target }: { target: string }) => {
 
       updateBalance();
       updateTokens();
+      setTimeout(() => {
+        updateTokens();
+      }, 1000);
     } catch (e) {
       if (id1) toast.dismiss(id1);
       if (id2) toast.dismiss(id2);
