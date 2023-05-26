@@ -25,5 +25,7 @@ export const Web3Providers = () => {
     });
   }, [setProviders]);
 
+  useEffect(() => () => sessionStorage.clear(), []);
+
   return null;
 };

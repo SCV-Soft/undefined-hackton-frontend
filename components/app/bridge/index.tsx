@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 
 import BRIDGE_ABI from "abis/bridge.json";
 import VETH_ABI from "abis/veth.json";
+import { WEB3_PROVIDERS } from "atom/web3/providers/state";
 import { SIGNER_INFOS, WEB3_SIGNER } from "atom/web3/signer/state";
 import { Button, Card, Infos, Input, MyInfos } from "components/common";
 import { ConnectButton } from "components/global/button/connect";
@@ -19,19 +20,19 @@ const L1_BRIDGE_ADDRESS = "0x66AC44FC2b84B6618D09b61BFd52d85Dc17daCAb";
 export const BridgeSwap = () => {
   const signer = useAtomValue(WEB3_SIGNER);
   const { address } = useAtomValue(SIGNER_INFOS);
+  const provider = useAtomValue(WEB3_PROVIDERS)?.["ethereum"];
 
   const [input, setInput] = useState("");
-  const [balance, setBalance] = useState(
-    sessionStorage.getItem("veth_balance") || "0"
-  );
+  const [balance, setBalance] = useState("0");
 
   const updateBalance = useCallback(async () => {
-    if (!signer) return;
+    if (!signer || !provider) return;
 
-    const veth = new ethers.Contract(L1_VETH_ADDRESS, VETH_ABI, signer);
+    const veth = new ethers.Contract(L1_VETH_ADDRESS, VETH_ABI, provider);
     const balance = await veth.balanceOf(address);
     setBalance(ethers.utils.formatEther(balance));
-  }, [signer, address]);
+    sessionStorage.setItem("veth_balance", balance);
+  }, [address, provider, signer]);
 
   const handleMax = () => setInput(balance);
 
@@ -46,8 +47,6 @@ export const BridgeSwap = () => {
         ethers.constants.MaxUint256
       );
       await tx.wait();
-
-      // todo: loading spin
 
       const l1bridge = new ethers.Contract(
         L1_BRIDGE_ADDRESS,
@@ -70,12 +69,14 @@ export const BridgeSwap = () => {
   };
 
   useEffect(() => {
+    const cachedBalance = sessionStorage.getItem("veth_balance");
+    if (cachedBalance) setBalance(cachedBalance);
     updateBalance();
     return () => {
-      sessionStorage.setItem("veth_balance", balance);
       setBalance("0");
     };
-  }, [balance, updateBalance]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [updateBalance]);
 
   return (
     <Card className="flex flex-col gap-4">

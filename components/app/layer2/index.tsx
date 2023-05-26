@@ -2,11 +2,12 @@
 
 import { ethers } from "ethers";
 import { useAtomValue } from "jotai";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 import L2_SWAP_ABI from "abis/l2swap.json";
 import WETH_ABI from "abis/weth.json";
+import { WEB3_PROVIDERS } from "atom/web3/providers/state";
 import { SIGNER_INFOS, WEB3_SIGNER } from "atom/web3/signer/state";
 import { Button, Card, Infos, Input, MyInfos } from "components/common";
 import { ConnectButton } from "components/global/button/connect";
@@ -17,14 +18,12 @@ const L2_WETH_ADDRESS = "0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa";
 export const Layer2Swap = () => {
   const signer = useAtomValue(WEB3_SIGNER);
   const { address } = useAtomValue(SIGNER_INFOS);
+  const provider = useAtomValue(WEB3_PROVIDERS)?.["polygon"];
 
   const [input, setInput] = useState("");
   const [balance, setBalance] = useState("0");
 
-  const handleMax = () => {
-    // todo: get max amount
-    setInput("123000");
-  };
+  const handleMax = () => setInput(balance);
 
   const handleSwap = async () => {
     if (!signer) return toast.error("Please connect your wallet first");
@@ -33,8 +32,12 @@ export const Layer2Swap = () => {
     try {
       const l2swap = new ethers.Contract(L2_SWAP_ADDRESS, L2_SWAP_ABI, signer);
       const weth = new ethers.Contract(L2_WETH_ADDRESS, WETH_ABI, signer);
-      await weth.approve(L2_SWAP_ADDRESS, amount);
-      await l2swap.swap(amount);
+      const tx = await weth.approve(
+        L2_SWAP_ADDRESS,
+        ethers.constants.MaxUint256
+      );
+      await tx.wait();
+      await (await l2swap.swap(amount)).wait();
       toast.success("Success to swap");
     } catch (e) {
       toast.error("Transaction failed");
@@ -42,11 +45,32 @@ export const Layer2Swap = () => {
     }
   };
 
+  const updateBalance = useCallback(async () => {
+    if (!provider || !signer) return;
+
+    const weth = new ethers.Contract(L2_WETH_ADDRESS, WETH_ABI, provider);
+    const balance = await weth.balanceOf(address);
+    setBalance(ethers.utils.formatEther(balance));
+    sessionStorage.setItem("l2_weth_balance", balance);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [address, signer, provider]);
+
+  useEffect(() => {
+    const cachedBalance = sessionStorage.getItem("l2_weth_balance");
+    if (cachedBalance) setBalance(cachedBalance);
+
+    updateBalance();
+    return () => {
+      setBalance("0");
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [updateBalance]);
+
   return (
     <Card className="flex flex-col gap-4">
       {signer && (
         <div>
-          <MyInfos address={address} available="123,000" baseSymbol={"WETH"} />
+          <MyInfos address={address} available={balance} baseSymbol={"WETH"} />
           <div className="divider !mb-1 before:bg-black/50 after:bg-black/50" />
         </div>
       )}

@@ -44,7 +44,7 @@ export const Layer1Swap = ({ target }: { target: string }) => {
       ethers.utils.formatEther(target === "ETH" ? ethBalance : wethBalance)
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [address, providers, signer, target]);
+  }, [address, target]);
 
   const handleMax = () => setInput(balance);
 
