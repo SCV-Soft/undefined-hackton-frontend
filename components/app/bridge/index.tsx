@@ -15,8 +15,8 @@ import { Button, Card, Infos, Input, MyInfos } from "components/common";
 import { ConnectButton } from "components/global/button/connect";
 import LogoSvg from "public/logo.svg";
 
-const L1_VETH_ADDRESS = "0xfC6ae96facE347BB6419859C1592825B96224ab0";
-const L1_BRIDGE_ADDRESS = "0x66AC44FC2b84B6618D09b61BFd52d85Dc17daCAb";
+const L1_VETH_ADDRESS = "0xfaCC1871330DB8c7346e7F76514D04857eEEA089";
+const L1_BRIDGE_ADDRESS = "0x05134a61AF5E628E54cC609dA25B53FF2Caf293b";
 
 export const BridgeSwap = () => {
   const signer = useAtomValue(WEB3_SIGNER);
@@ -74,7 +74,7 @@ export const BridgeSwap = () => {
       await (
         await l1bridge.deposit(
           L1_VETH_ADDRESS,
-          80001,
+          81,
           amount,
           address,
           await l1bridge.nonce(address)

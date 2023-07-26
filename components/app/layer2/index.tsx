@@ -13,13 +13,13 @@ import { SIGNER_INFOS, WEB3_SIGNER } from "atom/web3/signer/state";
 import { Button, Card, Infos, Input, MyInfos } from "components/common";
 import { ConnectButton } from "components/global/button/connect";
 
-const L2_SWAP_ADDRESS = "0xDA49F943Be939Ef9eE1BdaB3C9D1644Baae763bb";
-const L2_WETH_ADDRESS = "0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa";
+const L2_SWAP_ADDRESS = "0x2a90d4c4B799BD6238661E11920ad2E371046eEb";
+const L2_WETH_ADDRESS = "0xB83508bB360Ad2c8726ba6E1746D03d4BCac387C";
 
 export const Layer2Swap = () => {
   const signer = useAtomValue(WEB3_SIGNER);
   const { address } = useAtomValue(SIGNER_INFOS);
-  const provider = useAtomValue(WEB3_PROVIDERS)?.["polygon"];
+  const provider = useAtomValue(WEB3_PROVIDERS)?.["astar"];
   const updateTokens = useSetAtom(UPDATE_TOKENS);
 
   const [input, setInput] = useState("");
@@ -90,7 +90,7 @@ export const Layer2Swap = () => {
     (async () => {
       await window.ethereum.request({
         method: "wallet_switchEthereumChain",
-        params: [{ chainId: "0x" + (80001).toString(16) }],
+        params: [{ chainId: "0x" + (81).toString(16) }],
       });
     })();
   }, []);

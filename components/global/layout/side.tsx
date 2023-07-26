@@ -66,7 +66,7 @@ export const Menu = () => {
         <span>Layer 2 Swap</span>
       </li>
       {[
-        { href: "/swap/layer2?target=matic", label: "Polygon (Matic)" },
+        { href: "/swap/layer2?target=", label: "Astar" },
         { href: "#", label: "Abitrum" },
         { href: "#", label: "Loopring (LRC)" },
         { href: "#", label: "Immutable X" },

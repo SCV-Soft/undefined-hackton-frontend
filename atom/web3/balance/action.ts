@@ -6,22 +6,22 @@ import { SIGNER_INFOS, WEB3_SIGNER } from "../signer/state";
 
 import { L1_VETH, L2_VETH, SCETH } from "./state";
 
-const L1_VETH_ADDRESS = "0xfC6ae96facE347BB6419859C1592825B96224ab0";
-const L2_VETH_ADDRESS = "0xe5b1C4Be4289CA511440C1287E0C9E031a3bfe3D";
-const SCETH_ADDRESS = "0x153fab4B5E067724B4387713ABfBB6Eb581119d6";
+const L1_VETH_ADDRESS = "0xfaCC1871330DB8c7346e7F76514D04857eEEA089";
+const L2_VETH_ADDRESS = "0xFF847bef92cdF7587341C7F1c8De03A35F4eE44D";
+const SCETH_ADDRESS = "0x485904f09Fec2e758FaF544893989a8d17cbd8Bc";
 
 const balanceOfAbi = ["function balanceOf(address) view returns (uint256)"];
 
 export const UPDATE_TOKENS = atom(null, async (get, set) => {
   const { address } = get(SIGNER_INFOS);
-  const { ethereum, polygon } = get(WEB3_PROVIDERS) ?? {};
+  const { ethereum, astar } = get(WEB3_PROVIDERS) ?? {};
   const signer = get(WEB3_SIGNER);
 
-  if (!signer || !ethereum || !polygon) return;
+  if (!signer || !ethereum || !astar) return;
 
   const l1_veth = new ethers.Contract(L1_VETH_ADDRESS, balanceOfAbi, ethereum);
-  const l2_veth = new ethers.Contract(L2_VETH_ADDRESS, balanceOfAbi, polygon);
-  const sceth = new ethers.Contract(SCETH_ADDRESS, balanceOfAbi, polygon);
+  const l2_veth = new ethers.Contract(L2_VETH_ADDRESS, balanceOfAbi, astar);
+  const sceth = new ethers.Contract(SCETH_ADDRESS, balanceOfAbi, astar);
 
   const [l1_veth_balance, l2_veth_balance, sceth_balance] = await Promise.all([
     l1_veth.balanceOf(address),
