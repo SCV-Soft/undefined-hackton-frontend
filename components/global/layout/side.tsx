@@ -119,7 +119,7 @@ export const Side = () => {
   return (
     <aside className="min-h-screen px-10 py-8 shadow-xl">
       <div className="flex h-full flex-col gap-8">
-        <Image src={LogoSvg} alt="logo" width={156} />
+        <Image src={LogoSvg} alt="logo" width={176} />
         <div className="grow">
           <Menu />
         </div>
