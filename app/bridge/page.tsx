@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 
 import { CosmosAstarSwap } from "components/app/bridge/cosmos-astar";
 import { ETHAstarSwap } from "components/app/bridge/eth-astar";
-import { ETHLayerSwap } from "components/app/bridge/eth-layer";
+import { ETHPolygonSwap } from "components/app/bridge/eth-polygon";
 
 export default function BridgePage({
   searchParams,
@@ -15,12 +15,12 @@ export default function BridgePage({
   const { pair1, pair2 } = searchParams || {};
 
   switch (`${pair1}-${pair2}`) {
-    case "eth-astar":
-      return <ETHAstarSwap />;
     case "atom-astar":
       return <CosmosAstarSwap />;
-    case "l1eth-l2eth":
-      return <ETHLayerSwap />;
+    case "eth-astar":
+      return <ETHAstarSwap />;
+    case "eth-polygon":
+      return <ETHPolygonSwap />;
     default:
       return redirect("/bridge?pair1=eth&pair2=astar");
   }
