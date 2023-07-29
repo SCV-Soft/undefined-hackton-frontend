@@ -1,25 +1,27 @@
-import { FaSync } from "react-icons/fa";
+import { redirect } from "next/navigation";
 
-import { BridgeSwap } from "components/app/bridge";
-import { Header } from "components/common";
+import { CosmosAstarSwap } from "components/app/bridge/cosmos-astar";
+import { ETHAstarSwap } from "components/app/bridge/eth-astar";
+import { ETHLayerSwap } from "components/app/bridge/eth-layer";
 
-export default function BridgePage() {
-  return (
-    <div className="flex flex-col gap-4">
-      <Header
-        title={
-          <div className="flex items-end gap-4">
-            <span>Bridge</span>
-            <span className="flex items-center gap-2 text-lg">
-              vETH
-              <FaSync />
-              vETH
-            </span>
-          </div>
-        }
-        subtitle="Move your vETH to Layer 2 by one step"
-      />
-      <BridgeSwap />
-    </div>
-  );
+export default function BridgePage({
+  searchParams,
+}: {
+  searchParams: {
+    pair1: string;
+    pair2: string;
+  };
+}) {
+  const { pair1, pair2 } = searchParams || {};
+
+  switch (`${pair1}-${pair2}`) {
+    case "eth-astar":
+      return <ETHAstarSwap />;
+    case "atom-astar":
+      return <CosmosAstarSwap />;
+    case "l1eth-l2eth":
+      return <ETHLayerSwap />;
+    default:
+      return redirect("/bridge?pair1=eth&pair2=astar");
+  }
 }
