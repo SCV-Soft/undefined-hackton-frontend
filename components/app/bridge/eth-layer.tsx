@@ -18,7 +18,7 @@ import LogoSvg from "public/logo.png";
 const L1_VETH_ADDRESS = "0xfaCC1871330DB8c7346e7F76514D04857eEEA089";
 const L1_BRIDGE_ADDRESS = "0x05134a61AF5E628E54cC609dA25B53FF2Caf293b";
 
-export const BridgeSwap = () => {
+export const ETHLayerSwap = () => {
   const signer = useAtomValue(WEB3_SIGNER);
   const { address } = useAtomValue(SIGNER_INFOS);
   const provider = useAtomValue(WEB3_PROVIDERS)?.["ethereum"];
