@@ -169,12 +169,12 @@ export const BridgeMenu = () => {
           label: <IconLinkLabel from="ETH" to="Astar" middle="arrow" />,
         },
         {
-          href: "/bridge?pair1=atom&pair2=astar",
-          label: <IconLinkLabel from="Cosmos" to="Astar" middle="arrow" />,
+          href: "/bridge?pair1=eth&pair2=polygon",
+          label: <IconLinkLabel from="ETH" to="Polygon" middle="arrow" />,
         },
         {
-          href: "/bridge?pair1=l1eth&pair2=l2eth",
-          label: <IconLinkLabel from="ETH L1" to="ETH L2" middle="arrow" />,
+          href: "/bridge?pair1=atom&pair2=astar",
+          label: <IconLinkLabel from="Cosmos" to="Astar" middle="arrow" />,
         },
       ].map(({ href, label }) => (
         <MenuLinkItem
