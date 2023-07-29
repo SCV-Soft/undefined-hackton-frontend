@@ -10,6 +10,10 @@ export const Web3Providers = () => {
   const setProviders = useSetAtom(UPDATE_WEB3_PROVIDERS);
 
   useEffect(() => {
+    const polygonTestnetProvider = new ethers.providers.JsonRpcProvider(
+      "https://rpc-mumbai.maticvigil.com/"
+    );
+
     const astarTestnetProvider = new ethers.providers.JsonRpcProvider(
       "https://evm.shibuya.astar.network"
     );
@@ -26,6 +30,7 @@ export const Web3Providers = () => {
       astar: astarTestnetProvider,
       ethereum: ethereumTestnetProvider,
       evmos: evmosTestnetProvider,
+      polygon: polygonTestnetProvider,
     });
   }, [setProviders]);
 
