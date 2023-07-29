@@ -15,13 +15,17 @@ export const Web3Providers = () => {
     );
 
     const ethereumTestnetProvider = new ethers.providers.JsonRpcProvider(
-      "https://eth-goerli.g.alchemy.com/v2/" +
-        process.env.NEXT_PUBLIC_ALCHEMY_KEY
+      "https://ethereum-goerli.publicnode.com"
+    );
+
+    const evmosTestnetProvider = new ethers.providers.JsonRpcProvider(
+      "https://eth.bd.evmos.dev:8545"
     );
 
     setProviders({
       astar: astarTestnetProvider,
       ethereum: ethereumTestnetProvider,
+      evmos: evmosTestnetProvider,
     });
   }, [setProviders]);
 

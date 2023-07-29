@@ -15,14 +15,14 @@ import { Button, Card, Infos, Input, MyInfos } from "components/common";
 import { ConnectButton } from "components/global/button/connect";
 import LogoSvg from "public/logo.png";
 
-const L1_VETH_ADDRESS = "0xfaCC1871330DB8c7346e7F76514D04857eEEA089";
-const L1_BRIDGE_ADDRESS = "0x05134a61AF5E628E54cC609dA25B53FF2Caf293b";
+const COSMOS_VATOM_ADDRESS = "0xAFc85AbC6DB664dAfF2Dc1007A0428cFCaDb392F";
+const COSMOS_BRIDGE_ADDRESS = "0x6A7222164a53f78Cc0F84D2658889f1d16Ee6086";
 
-// eth veth -> astar veth
+// cosmos vatom -> astar vatom
 export const CosmosAstarSwap = () => {
   const signer = useAtomValue(WEB3_SIGNER);
   const { address } = useAtomValue(SIGNER_INFOS);
-  const provider = useAtomValue(WEB3_PROVIDERS)?.["ethereum"];
+  const provider = useAtomValue(WEB3_PROVIDERS)?.["evmos"];
   const updateTokens = useSetAtom(UPDATE_TOKENS);
 
   const [input, setInput] = useState("");
@@ -31,11 +31,11 @@ export const CosmosAstarSwap = () => {
   const updateBalance = useCallback(async () => {
     if (!signer || !provider) return;
 
-    const veth = new ethers.Contract(L1_VETH_ADDRESS, VETH_ABI, provider);
-    const _balance = await veth.balanceOf(address);
+    const vatom = new ethers.Contract(COSMOS_VATOM_ADDRESS, VETH_ABI, provider);
+    const _balance = await vatom.balanceOf(address);
     const balance = ethers.utils.formatEther(_balance);
     setBalance(balance);
-    sessionStorage.setItem("veth_balance", balance);
+    sessionStorage.setItem("vatom_balance", balance);
   }, [address, provider, signer]);
 
   const handleMax = () => setInput(balance);
@@ -49,12 +49,12 @@ export const CosmosAstarSwap = () => {
     let id2: Id | null = null;
 
     try {
-      const veth = new ethers.Contract(L1_VETH_ADDRESS, VETH_ABI, signer);
+      const vatom = new ethers.Contract(COSMOS_VATOM_ADDRESS, VETH_ABI, signer);
 
       id1 = toast.loading("Waiting for approval");
 
       await (
-        await veth.approve(L1_BRIDGE_ADDRESS, ethers.constants.MaxUint256)
+        await vatom.approve(COSMOS_BRIDGE_ADDRESS, ethers.constants.MaxUint256)
       ).wait();
 
       toast.update(id1, {
@@ -65,7 +65,7 @@ export const CosmosAstarSwap = () => {
       });
 
       const l1bridge = new ethers.Contract(
-        L1_BRIDGE_ADDRESS,
+        COSMOS_BRIDGE_ADDRESS,
         BRIDGE_ABI,
         signer
       );
@@ -74,7 +74,7 @@ export const CosmosAstarSwap = () => {
 
       await (
         await l1bridge.deposit(
-          L1_VETH_ADDRESS,
+          COSMOS_VATOM_ADDRESS,
           81,
           amount,
           address,
@@ -109,13 +109,13 @@ export const CosmosAstarSwap = () => {
     (async () => {
       await window.ethereum.request({
         method: "wallet_switchEthereumChain",
-        params: [{ chainId: "0x" + (5).toString(16) }],
+        params: [{ chainId: "0x" + (9000).toString(16) }],
       });
     })();
   }, []);
 
   useEffect(() => {
-    const cachedBalance = sessionStorage.getItem("veth_balance");
+    const cachedBalance = sessionStorage.getItem("vatom_balance");
     if (cachedBalance) setBalance(cachedBalance);
     updateBalance();
     return () => {
@@ -128,7 +128,7 @@ export const CosmosAstarSwap = () => {
     <Card className="flex flex-col gap-4">
       {signer && (
         <div>
-          <MyInfos address={address} available={balance} baseSymbol="vETH" />
+          <MyInfos address={address} available={balance} baseSymbol="vATOM" />
           <div className="divider !mb-1 before:bg-black/50 after:bg-black/50" />
         </div>
       )}
@@ -149,7 +149,7 @@ export const CosmosAstarSwap = () => {
               </button>
             )
           }
-          placeholder="vETH Amount"
+          placeholder="vATOM Amount"
         />
         {!signer ? (
           <ConnectButton />
@@ -159,10 +159,10 @@ export const CosmosAstarSwap = () => {
       </div>
       <Infos
         data={[
-          ["You will receive", "1.1424 vETH"],
-          ["Exchange rate", "1 ETH = 0.95 vETH"],
+          ["You will receive", "1.1424 vATOM"],
+          ["Exchange rate", "1 ETH = 0.95 vATOM"],
           ["Max transaction cost", "$ 10.84"],
-          ["Reward fee", "0.025 svETH"],
+          ["Reward fee", "0.025 svATOM"],
         ]}
       />
     </Card>
