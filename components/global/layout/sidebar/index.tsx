@@ -1,16 +1,12 @@
 "use client";
 
 import clsx from "clsx";
-import { useAtomValue } from "jotai";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { ReactNode } from "react";
 import { FaSync } from "react-icons/fa";
 
-import { Balance } from "../balance";
-
-import { WEB3_SIGNER } from "atom/web3/signer/state";
 import { useTBD } from "hooks/useTBD";
 import LogoSvg from "public/logo.png";
 
