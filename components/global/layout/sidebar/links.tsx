@@ -155,14 +155,33 @@ export const Layer2SwapMenu = ({ target }: LayerSwapMenuProps) => {
 };
 
 export const BridgeMenu = () => {
-  const path = usePathname();
+  const pair1 = useSearchParams().get("pair1");
+  const pair2 = useSearchParams().get("pair2");
 
   return (
     <>
-      {[{ href: "/bridge", label: "Bridge" }].map(({ href, label }) => (
+      <li className="menu-title">
+        <span>Bridge</span>
+      </li>
+      {[
+        {
+          href: "/bridge?pair1=eth&pair2=astar",
+          label: <IconLinkLabel from="ETH" to="Astar" middle="arrow" />,
+        },
+        {
+          href: "/bridge?pair1=atom&pair2=astar",
+          label: <IconLinkLabel from="Cosmos" to="Astar" middle="arrow" />,
+        },
+        {
+          href: "/bridge?pair1=l1eth&pair2=l2eth",
+          label: <IconLinkLabel from="ETH L1" to="ETH L2" middle="arrow" />,
+        },
+      ].map(({ href, label }) => (
         <MenuLinkItem
           key={`menu-${href}`}
-          active={path === href}
+          active={
+            !!pair1 && !!pair2 && href.includes(pair1) && href.includes(pair2)
+          }
           {...{ href, label }}
         />
       ))}
