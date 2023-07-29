@@ -1,10 +1,31 @@
 import clsx from "clsx";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { ReactNode } from "react";
-import { FaSync } from "react-icons/fa";
+import { FaSync, FaArrowRight } from "react-icons/fa";
 
 import { useTBD } from "hooks/useTBD";
+
+interface SwapLinkLabelProps {
+  from: string;
+  to: string;
+  middle: "swap" | "arrow";
+}
+
+const IconLinkLabel = ({ from, to, middle }: SwapLinkLabelProps) => {
+  return (
+    <span className="flex items-center gap-2">
+      {from}
+      {
+        {
+          swap: <FaSync />,
+          arrow: <FaArrowRight />,
+        }[middle]
+      }
+      {to}
+    </span>
+  );
+};
 
 interface MenuLinkItemProps {
   href: string;
@@ -25,6 +46,48 @@ const MenuLinkItem = ({ href, label, active }: MenuLinkItemProps) => {
   );
 };
 
+export const AstarNetworkMenu = () => {
+  const pair1 = useSearchParams().get("pair1");
+  const pair2 = useSearchParams().get("pair2");
+  const path = usePathname();
+
+  return (
+    <>
+      <li className="menu-title">
+        <span>Astar Network</span>
+      </li>
+      {[
+        {
+          href: "/astar?pair1=eth&pair2=atom",
+          label: <IconLinkLabel from="vETH" to="vATOM" middle="swap" />,
+        },
+        {
+          href: "/astar?pair1=eth&pair2=dot",
+          label: <IconLinkLabel from="vETH" to="vDOT" middle="swap" />,
+        },
+        {
+          href: "/astar?pair1=atom&pair2=dot",
+          label: <IconLinkLabel from="vATOM" to="vDOT" middle="swap" />,
+        },
+      ].map(({ href, label }) => (
+        <MenuLinkItem
+          key={`menu-${href}`}
+          active={
+            !!pair1 && !!pair2 && href.includes(pair1) && href.includes(pair2)
+          }
+          {...{ href, label }}
+        />
+      ))}
+
+      <MenuLinkItem
+        href="/astar/swap"
+        label="Astar Swap"
+        active={path === "/astar/swap"}
+      />
+    </>
+  );
+};
+
 interface LayerSwapMenuProps {
   target: string | null;
 }
@@ -38,23 +101,11 @@ export const Layer1SwapMenu = ({ target }: LayerSwapMenuProps) => {
       {[
         {
           href: "/swap/layer1?target=eth",
-          label: (
-            <span className="flex items-center gap-2">
-              vETH
-              <FaSync />
-              ETH
-            </span>
-          ),
+          label: <IconLinkLabel from="vETH" to="ETH" middle="swap" />,
         },
         {
           href: "/swap/layer1?target=weth",
-          label: (
-            <span className="flex items-center gap-2">
-              vETH
-              <FaSync />
-              wETH
-            </span>
-          ),
+          label: <IconLinkLabel from="vETH" to="wETH" middle="swap" />,
         },
       ].map(({ href, label }) => (
         <MenuLinkItem
