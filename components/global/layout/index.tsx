@@ -1,6 +1,6 @@
 import { PropsWithChildren } from "react";
 
-import { Side } from "./side";
+import { Side } from "./sidebar";
 
 export const GlobalLayout = ({ children }: PropsWithChildren) => {
   return (
