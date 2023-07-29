@@ -3,7 +3,12 @@
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 
-import { BridgeMenu, Layer1SwapMenu, Layer2SwapMenu } from "./layer";
+import {
+  AstarNetworkMenu,
+  BridgeMenu,
+  Layer1SwapMenu,
+  Layer2SwapMenu,
+} from "./links";
 
 import LogoSvg from "public/logo.png";
 
@@ -12,6 +17,8 @@ export const Menu = () => {
 
   return (
     <ul className="menu rounded-box bg-transparent p-2">
+      <AstarNetworkMenu />
+      <div className="divider !my-1" />
       <Layer1SwapMenu target={target} />
       <div className="divider !my-1" />
       <Layer2SwapMenu target={target} />
