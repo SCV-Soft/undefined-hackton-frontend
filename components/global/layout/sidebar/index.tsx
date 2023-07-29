@@ -5,13 +5,33 @@ import { useAtomValue } from "jotai";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
+import { ReactNode } from "react";
 import { FaSync } from "react-icons/fa";
 
-import { Balance } from "./balance";
+import { Balance } from "../balance";
 
 import { WEB3_SIGNER } from "atom/web3/signer/state";
 import { useTBD } from "hooks/useTBD";
 import LogoSvg from "public/logo.png";
+
+interface MenuLinkItemProps {
+  href: string;
+  label: ReactNode;
+  active?: boolean;
+}
+
+const MenuLinkItem = ({ href, label, active }: MenuLinkItemProps) => {
+  return (
+    <li>
+      <Link
+        className={clsx([active ? "font-bold text-black/80" : "text-black/40"])}
+        href={href}
+      >
+        {label}
+      </Link>
+    </li>
+  );
+};
 
 export const Menu = () => {
   const { openTBD } = useTBD();
@@ -45,23 +65,16 @@ export const Menu = () => {
             </span>
           ),
         },
-      ].map(({ href, label }) => {
-        return (
-          <li key={`menu-${href}`}>
-            <Link
-              href={href}
-              className={clsx([
-                href.split("target=")[1] === target
-                  ? "font-bold text-black"
-                  : "text-black/40",
-              ])}
-            >
-              {label}
-            </Link>
-          </li>
-        );
-      })}
+      ].map(({ href, label }) => (
+        <MenuLinkItem
+          key={`menu-${href}`}
+          active={href.split("target=")[1] === target}
+          {...{ href, label }}
+        />
+      ))}
+
       <div className="divider !my-1" />
+
       <li className="menu-title">
         <span>Layer 2 Swap</span>
       </li>
@@ -82,40 +95,27 @@ export const Menu = () => {
           );
         }
         return (
-          <li key={`menu-${label}`}>
-            <Link
-              className={clsx([
-                href.split("target=")[1] === target
-                  ? "font-bold text-black/80"
-                  : "text-black/40",
-              ])}
-              href={href}
-            >
-              <span>{label}</span>
-            </Link>
-          </li>
+          <MenuLinkItem
+            key={`menu-${href}`}
+            active={href.split("target=")[1] === target}
+            {...{ href, label }}
+          />
         );
       })}
+
       <div className="divider !my-1" />
       {[{ href: "/bridge", label: "Bridge" }].map(({ href, label }) => (
-        <li key={href}>
-          <Link
-            className={clsx([
-              path === href ? "font-bold text-black/80" : "text-black/40",
-            ])}
-            href={href}
-          >
-            {label}
-          </Link>
-        </li>
+        <MenuLinkItem
+          key={`menu-${href}`}
+          active={path === href}
+          {...{ href, label }}
+        />
       ))}
     </ul>
   );
 };
 
 export const Side = () => {
-  const signer = useAtomValue(WEB3_SIGNER);
-
   return (
     <aside className="min-h-screen px-10 py-8 shadow-xl">
       <div className="flex h-full flex-col gap-8">
@@ -123,11 +123,6 @@ export const Side = () => {
         <div className="grow">
           <Menu />
         </div>
-        {signer && (
-          <div className="py-6 pl-6">
-            <Balance />
-          </div>
-        )}
       </div>
     </aside>
   );
