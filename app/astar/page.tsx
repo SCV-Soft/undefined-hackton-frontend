@@ -22,7 +22,7 @@ const AstarPageContent = ({
 }) => {
   switch (`${pair1}-${pair2}`) {
     case "eth-atom":
-      return <ETHCosmosVSwap />;
+      return <ETHCosmosVSwap {...{ pair1, pair2 }} />;
     case "eth-dot":
       return <ETHPolygonVSwap />;
     case "atom-dot":
