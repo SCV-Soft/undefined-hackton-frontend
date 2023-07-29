@@ -88,6 +88,45 @@ export const Infos = ({ data }: InfosProps) => {
   );
 };
 
+interface MyInfos2Props {
+  address: string;
+  balanceText: string;
+  assets: Array<{
+    symbol: string;
+    amount: string;
+  }>;
+}
+
+export const MyInfos2 = ({ address, balanceText, assets }: MyInfos2Props) => {
+  return (
+    <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-2">
+        <h1 className="font-medium text-black/50">{balanceText}</h1>
+        {assets.map(({ symbol, amount }) => (
+          <p
+            key={`my-infos-${symbol}-${amount}`}
+            className="text-2xl font-semibold"
+          >
+            {amount.length > 10 ? amount.slice(0, 10) + "..." : amount} {symbol}
+          </p>
+        ))}
+      </div>
+      <div className="flex items-center rounded-full bg-stone-600">
+        <Image
+          className="rounded-full"
+          src={generateAvatarURL(address)}
+          width={24}
+          height={24}
+          alt="jazzicon"
+        />
+        <span className="pl-2 pr-3 text-xs font-semibold text-white">
+          {address.slice(0, 6)}...{address.slice(-6)}
+        </span>
+      </div>
+    </div>
+  );
+};
+
 interface MyInfosProps {
   baseSymbol: string;
   available: string;
