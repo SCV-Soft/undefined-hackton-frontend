@@ -57,7 +57,7 @@ export const Card = ({
   return (
     <div
       className={clsx([
-        "w-[470px] border-2 border-black bg-white px-4 py-6",
+        "w-[470px] rounded bg-white px-4 py-6 shadow-lg",
         className,
       ])}
     >
