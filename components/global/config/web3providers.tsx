@@ -10,18 +10,27 @@ export const Web3Providers = () => {
   const setProviders = useSetAtom(UPDATE_WEB3_PROVIDERS);
 
   useEffect(() => {
+    const polygonTestnetProvider = new ethers.providers.JsonRpcProvider(
+      "https://rpc-mumbai.maticvigil.com/"
+    );
+
     const astarTestnetProvider = new ethers.providers.JsonRpcProvider(
       "https://evm.shibuya.astar.network"
     );
 
     const ethereumTestnetProvider = new ethers.providers.JsonRpcProvider(
-      "https://eth-goerli.g.alchemy.com/v2/" +
-        process.env.NEXT_PUBLIC_ALCHEMY_KEY
+      "https://ethereum-goerli.publicnode.com"
+    );
+
+    const evmosTestnetProvider = new ethers.providers.JsonRpcProvider(
+      "https://eth.bd.evmos.dev:8545"
     );
 
     setProviders({
       astar: astarTestnetProvider,
       ethereum: ethereumTestnetProvider,
+      evmos: evmosTestnetProvider,
+      polygon: polygonTestnetProvider,
     });
   }, [setProviders]);
 
