@@ -13,7 +13,7 @@ import { WEB3_PROVIDERS } from "atom/web3/providers/state";
 import { SIGNER_INFOS, WEB3_SIGNER } from "atom/web3/signer/state";
 import { Button, Card, Infos, Input, MyInfos } from "components/common";
 import { ConnectButton } from "components/global/button/connect";
-import LogoSvg from "public/logo.svg";
+import LogoSvg from "public/logo.png";
 
 const L1_VETH_ADDRESS = "0xfaCC1871330DB8c7346e7F76514D04857eEEA089";
 const L1_BRIDGE_ADDRESS = "0x05134a61AF5E628E54cC609dA25B53FF2Caf293b";
@@ -136,6 +136,7 @@ export const BridgeSwap = () => {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           type="number"
+          // !FIXME: update this
           left={<Image src={LogoSvg} width={16} height={16} alt="v-ether" />}
           right={
             signer && (
