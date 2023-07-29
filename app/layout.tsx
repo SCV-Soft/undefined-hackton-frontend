@@ -9,8 +9,8 @@ import { ModalContainer } from "components/global/modal/container";
 import { ToastContainer } from "components/global/toast";
 
 export const metadata = {
-  title: "Layer Bridge Protocol",
-  description: "easily bridge your lsd tokens to other chains",
+  title: "LBP Protocol",
+  description: "easily bridge your assets use Astar Network ecosystem",
 };
 
 export default function RootLayout({ children }: PropsWithChildren) {
