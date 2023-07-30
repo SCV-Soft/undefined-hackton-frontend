@@ -7,13 +7,13 @@ export async function GET(req: any) {
   const rpcUrl = {
     ETH: "https://eth-goerli.g.alchemy.com/v2/46XOnps3Xm1toHm9ZDSMO6VugbkDXyOa",
     ATOM: "https://eth.bd.evmos.dev:8545",
-    ASTAR: "https://evm.shibuya.astar.network/",
+    ASTR: "https://evm.shibuya.astar.network/",
   };
 
   const provider = {
     ETH: new ethers.providers.JsonRpcProvider(rpcUrl.ETH),
     ATOM: new ethers.providers.JsonRpcProvider(rpcUrl.ATOM),
-    ASTAR: new ethers.providers.JsonRpcProvider(rpcUrl.ASTAR),
+    ASTR: new ethers.providers.JsonRpcProvider(rpcUrl.ASTR),
   };
 
   const ABI = [
@@ -35,16 +35,21 @@ export async function GET(req: any) {
         provider.ATOM
       ),
     },
-    ASTAR: {
+    ASTR: {
       ATOM: new ethers.Contract(
         "0xAFc85AbC6DB664dAfF2Dc1007A0428cFCaDb392F",
         ABI,
-        provider.ASTAR
+        provider.ASTR
       ),
       ETH: new ethers.Contract(
         "0xFF847bef92cdF7587341C7F1c8De03A35F4eE44D",
         ABI,
         provider.ATOM
+      ),
+      ASTR: new ethers.Contract(
+        "0x46744EB617FB56ee2364CD15Db9179C92012cb53",
+        ABI,
+        provider.ASTR
       ),
     },
   };
@@ -83,7 +88,7 @@ export async function GET(req: any) {
       ],
     },
     {
-      chain: "ASTAR",
+      chain: "ASTR",
       tokens: [
         {
           name: "Ethereum",
@@ -91,7 +96,7 @@ export async function GET(req: any) {
           contract: "0xFF847bef92cdF7587341C7F1c8De03A35F4eE44D".toLowerCase(),
           amount: Number(
             ethers.utils.formatUnits(
-              `${(await contract.ASTAR.ETH.balanceOf(addr)) || 0}`,
+              `${(await contract.ASTR.ETH.balanceOf(addr)) || 0}`,
               18
             )
           ),
@@ -103,6 +108,17 @@ export async function GET(req: any) {
           amount: Number(
             ethers.utils.formatUnits(
               `${(await contract.ATOM.ATOM.balanceOf(addr)) || 0}`,
+              18
+            )
+          ),
+        },
+        {
+          name: "Astar",
+          symbol: "ASTR",
+          contract: "0x46744EB617FB56ee2364CD15Db9179C92012cb53".toLowerCase(),
+          amount: Number(
+            ethers.utils.formatUnits(
+              `${(await contract.ASTR.ASTR.balanceOf(addr)) || 0}`,
               18
             )
           ),
