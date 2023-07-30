@@ -35,13 +35,11 @@ export type SwapState = {
   };
 };
 
-const Assets = ({ pair1, pair2 }: VSwapProps) => {
+const Assets = ({ pair1 }: VSwapProps) => {
   const { address } = useAtomValue(SIGNER_INFOS);
   const { data } = useAssets(address);
 
-  const assets = data.filter(
-    (item) => pair1.includes(item.symbol) || pair2.includes(item.symbol)
-  );
+  const assets = data.filter((item) => pair1.includes(item.symbol));
 
   return (
     <MyInfos2 address={address} balanceText="Balance on hand" assets={assets} />
