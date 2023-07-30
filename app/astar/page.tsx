@@ -41,7 +41,7 @@ export default function AstarPage({ searchParams }: AstarPageProps) {
         }
         subtitle={`Swap ${upperPair1} to v${upperPair2} the next generation LSD Token`}
       />
-      <VSwap {...{ pair1, pair2 }} />;
+      <VSwap {...{ pair1, pair2 }} />
     </div>
   );
 }
