@@ -6,44 +6,55 @@ import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 import { Id, toast } from "react-toastify";
 
-import L2_SWAP_ABI from "abis/l2swap.json";
-import WETH_ABI from "abis/weth.json";
+import BRIDGE_ABI from "abis/bridge.json";
+import VETH_ABI from "abis/veth.json";
 import { UPDATE_TOKENS } from "atom/web3/balance/action";
 import { WEB3_PROVIDERS } from "atom/web3/providers/state";
 import { SIGNER_INFOS, WEB3_SIGNER } from "atom/web3/signer/state";
 import { Button, Card, Infos, Input, MyInfos } from "components/common";
 import { ConnectButton } from "components/global/button/connect";
-import { SupportTokens } from "helper/token";
-import { getTokenImage } from "helper/token/images";
+import VETH from "public/icon/veth.svg";
 
-const L2_SWAP_ADDRESS = "0x2a90d4c4B799BD6238661E11920ad2E371046eEb";
-const L2_WETH_ADDRESS = "0xB83508bB360Ad2c8726ba6E1746D03d4BCac387C";
+const L1_VETH_ADDRESS = "0xfC6ae96facE347BB6419859C1592825B96224ab0";
+const L1_BRIDGE_ADDRESS = "0x66AC44FC2b84B6618D09b61BFd52d85Dc17daCAb";
 
-export const Layer2Swap = () => {
+// eth veth -> astar veth
+export const ETHPolygonSwap = () => {
   const signer = useAtomValue(WEB3_SIGNER);
   const { address } = useAtomValue(SIGNER_INFOS);
-  const provider = useAtomValue(WEB3_PROVIDERS)?.["astar"];
+  const provider = useAtomValue(WEB3_PROVIDERS)?.["ethereum"];
   const updateTokens = useSetAtom(UPDATE_TOKENS);
 
   const [input, setInput] = useState("");
   const [balance, setBalance] = useState("0");
 
+  const updateBalance = useCallback(async () => {
+    if (!signer || !provider) return;
+
+    const veth = new ethers.Contract(L1_VETH_ADDRESS, VETH_ABI, provider);
+    const _balance = await veth.balanceOf(address);
+    const balance = ethers.utils.formatEther(_balance);
+    setBalance(balance);
+    sessionStorage.setItem("veth_balance", balance);
+  }, [address, provider, signer]);
+
   const handleMax = () => setInput(balance);
 
   const handleSwap = async () => {
     if (!signer) return toast.error("Please connect your wallet first");
+
     const amount = ethers.utils.parseEther(input);
 
     let id1: Id | null = null;
     let id2: Id | null = null;
 
     try {
-      const l2swap = new ethers.Contract(L2_SWAP_ADDRESS, L2_SWAP_ABI, signer);
-      const weth = new ethers.Contract(L2_WETH_ADDRESS, WETH_ABI, signer);
+      const veth = new ethers.Contract(L1_VETH_ADDRESS, VETH_ABI, signer);
 
       id1 = toast.loading("Waiting for approval");
+
       await (
-        await weth.approve(L2_SWAP_ADDRESS, ethers.constants.MaxUint256)
+        await veth.approve(L1_BRIDGE_ADDRESS, ethers.constants.MaxUint256)
       ).wait();
 
       toast.update(id1, {
@@ -53,17 +64,33 @@ export const Layer2Swap = () => {
         autoClose: 2000,
       });
 
-      id2 = toast.loading("Waiting for swap");
-      await (await l2swap.swap(amount)).wait();
+      const l1bridge = new ethers.Contract(
+        L1_BRIDGE_ADDRESS,
+        BRIDGE_ABI,
+        signer
+      );
+
+      id2 = toast.loading("Waiting for transaction");
+
+      await (
+        await l1bridge.deposit(
+          L1_VETH_ADDRESS,
+          80001,
+          amount,
+          address,
+          await l1bridge.nonce(address)
+        )
+      ).wait();
 
       toast.update(id2, {
-        render: "Swap confirmed",
+        render: "Transaction confirmed",
         type: "success",
         isLoading: false,
         autoClose: 2000,
       });
 
       updateBalance();
+
       updateTokens();
       setTimeout(() => {
         updateTokens();
@@ -76,32 +103,20 @@ export const Layer2Swap = () => {
     }
   };
 
-  const updateBalance = useCallback(async () => {
-    if (!provider || !signer) return;
-
-    const weth = new ethers.Contract(L2_WETH_ADDRESS, WETH_ABI, provider);
-    const _balance = await weth.balanceOf(address);
-    const balance = ethers.utils.formatEther(_balance);
-    setBalance(balance);
-    sessionStorage.setItem("l2_weth_balance", balance);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [address, signer, provider]);
-
   useEffect(() => {
     if (!window.ethereum) return;
 
     (async () => {
       await window.ethereum.request({
         method: "wallet_switchEthereumChain",
-        params: [{ chainId: "0x" + (81).toString(16) }],
+        params: [{ chainId: "0x" + (5).toString(16) }],
       });
     })();
   }, []);
 
   useEffect(() => {
-    const cachedBalance = sessionStorage.getItem("l2_weth_balance");
+    const cachedBalance = sessionStorage.getItem("veth_balance");
     if (cachedBalance) setBalance(cachedBalance);
-
     updateBalance();
     return () => {
       setBalance("0");
@@ -113,7 +128,7 @@ export const Layer2Swap = () => {
     <Card className="flex flex-col gap-4">
       {signer && (
         <div>
-          <MyInfos address={address} available={balance} baseSymbol={"WETH"} />
+          <MyInfos address={address} available={balance} baseSymbol="vETH" />
           <div className="divider !mb-1 before:bg-black/50 after:bg-black/50" />
         </div>
       )}
@@ -122,14 +137,7 @@ export const Layer2Swap = () => {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           type="number"
-          left={
-            <Image
-              src={getTokenImage(SupportTokens.Astr)}
-              alt="ASTR"
-              width={18}
-              height={18}
-            />
-          }
+          left={<Image src={VETH} width={16} height={16} alt="v-ether" />}
           right={
             signer && (
               <button
@@ -140,12 +148,12 @@ export const Layer2Swap = () => {
               </button>
             )
           }
-          placeholder="ASTR Amount"
+          placeholder="vETH Amount"
         />
         {!signer ? (
           <ConnectButton />
         ) : (
-          <Button onClick={handleSwap} label="Swap" />
+          <Button onClick={handleSwap} label="Transfer" />
         )}
       </div>
       <Infos

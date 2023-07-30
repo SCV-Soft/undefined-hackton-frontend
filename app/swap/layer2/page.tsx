@@ -16,12 +16,10 @@ export default function Layer2Page({ searchParams }: Layer2PageProps) {
         title={
           <div className="flex items-end gap-4">
             <span>Layer 2 Swap</span>
-            <span className="flex items-center gap-2 text-lg">
-              Polygon (MATIC)
-            </span>
+            <span className="flex items-center gap-2 text-lg">Astar</span>
           </div>
         }
-        subtitle="Swap WETH to vETH the next generation LSD Token"
+        subtitle="Swap ASTR to vETH the next generation LSD Token"
       />
       <Layer2Swap />
     </div>

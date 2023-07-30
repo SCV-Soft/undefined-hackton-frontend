@@ -13,12 +13,13 @@ import { WEB3_PROVIDERS } from "atom/web3/providers/state";
 import { SIGNER_INFOS, WEB3_SIGNER } from "atom/web3/signer/state";
 import { Button, Card, Infos, Input, MyInfos } from "components/common";
 import { ConnectButton } from "components/global/button/connect";
-import LogoSvg from "public/logo.svg";
+import VETH from "public/icon/veth.svg";
 
-const L1_VETH_ADDRESS = "0xfC6ae96facE347BB6419859C1592825B96224ab0";
-const L1_BRIDGE_ADDRESS = "0x66AC44FC2b84B6618D09b61BFd52d85Dc17daCAb";
+const L1_VETH_ADDRESS = "0xfaCC1871330DB8c7346e7F76514D04857eEEA089";
+const L1_BRIDGE_ADDRESS = "0x05134a61AF5E628E54cC609dA25B53FF2Caf293b";
 
-export const BridgeSwap = () => {
+// eth veth -> astar veth
+export const ETHAstarSwap = () => {
   const signer = useAtomValue(WEB3_SIGNER);
   const { address } = useAtomValue(SIGNER_INFOS);
   const provider = useAtomValue(WEB3_PROVIDERS)?.["ethereum"];
@@ -74,7 +75,7 @@ export const BridgeSwap = () => {
       await (
         await l1bridge.deposit(
           L1_VETH_ADDRESS,
-          80001,
+          81,
           amount,
           address,
           await l1bridge.nonce(address)
@@ -136,7 +137,7 @@ export const BridgeSwap = () => {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           type="number"
-          left={<Image src={LogoSvg} width={16} height={16} alt="v-ether" />}
+          left={<Image src={VETH} width={16} height={16} alt="v-ether" />}
           right={
             signer && (
               <button
