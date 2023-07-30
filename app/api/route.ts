@@ -22,19 +22,29 @@ export async function GET(req: any) {
   ];
 
   const contract = {
-    ETH: {},
-    ATOM: {
+    ETH: {
       ETH: new ethers.Contract(
+        "0xfaCC1871330DB8c7346e7F76514D04857eEEA089",
+        ABI
+      ),
+    },
+    ATOM: {
+      ATOM: new ethers.Contract(
         "0xAFc85AbC6DB664dAfF2Dc1007A0428cFCaDb392F",
         ABI,
         provider.ATOM
       ),
     },
     ASTAR: {
-      ETH: new ethers.Contract(
+      ATOM: new ethers.Contract(
         "0xAFc85AbC6DB664dAfF2Dc1007A0428cFCaDb392F",
         ABI,
         provider.ASTAR
+      ),
+      ETH: new ethers.Contract(
+        "0xFF847bef92cdF7587341C7F1c8De03A35F4eE44D",
+        ABI,
+        provider.ATOM
       ),
     },
   };
@@ -46,7 +56,13 @@ export async function GET(req: any) {
         {
           name: "Ethereum",
           symbol: "ETH",
-          contract: "",
+          contract: "0xfaCC1871330DB8c7346e7F76514D04857eEEA089",
+          amount: Number(
+            ethers.utils.formatUnits(
+              `${(await contract.ETH.ETH.balanceOf(addr)) || 0}`,
+              18
+            )
+          ),
         },
       ],
     },
@@ -54,12 +70,12 @@ export async function GET(req: any) {
       chain: "ATOM",
       tokens: [
         {
-          name: "Ethereum",
-          symbol: "ETH",
+          name: "Cosmos",
+          symbol: "ATOM",
           contract: "0xAFc85AbC6DB664dAfF2Dc1007A0428cFCaDb392F".toLowerCase(),
           amount: Number(
             ethers.utils.formatUnits(
-              `${(await contract.ATOM.ETH.balanceOf(addr)) || 0}`,
+              `${(await contract.ATOM.ATOM.balanceOf(addr)) || 0}`,
               18
             )
           ),
@@ -72,10 +88,21 @@ export async function GET(req: any) {
         {
           name: "Ethereum",
           symbol: "ETH",
-          contract: "0xAFc85AbC6DB664dAfF2Dc1007A0428cFCaDb392F".toLowerCase(),
+          contract: "0xFF847bef92cdF7587341C7F1c8De03A35F4eE44D".toLowerCase(),
           amount: Number(
             ethers.utils.formatUnits(
               `${(await contract.ASTAR.ETH.balanceOf(addr)) || 0}`,
+              18
+            )
+          ),
+        },
+        {
+          name: "Cosmos",
+          symbol: "ATOM",
+          contract: "0xAFc85AbC6DB664dAfF2Dc1007A0428cFCaDb392F".toLowerCase(),
+          amount: Number(
+            ethers.utils.formatUnits(
+              `${(await contract.ATOM.ATOM.balanceOf(addr)) || 0}`,
               18
             )
           ),
