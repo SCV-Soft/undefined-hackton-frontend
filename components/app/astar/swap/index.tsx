@@ -104,8 +104,6 @@ export const AstarSwap = () => {
 
   const handleSwap = () => {};
 
-  // TODO: get balance for v token
-
   return (
     <Card className="flex flex-col gap-4">
       {signer && (
@@ -149,7 +147,7 @@ export const AstarSwap = () => {
               <FaAngleDown className="text-black/80" />
             </button>
           }
-          placeholder={`v${getTokenSymbol(
+          placeholder={`${getTokenSymbol(
             inputState[Field.OUTPUT].currencyId
           )} Amount`}
         />
