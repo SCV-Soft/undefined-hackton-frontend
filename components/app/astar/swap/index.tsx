@@ -35,7 +35,7 @@ const initialState: SwapState = {
   independentField: Field.INPUT,
   typedValue: "",
   [Field.INPUT]: {
-    currencyId: VTokens.VETH,
+    currencyId: VTokens.VATOM,
   },
   [Field.OUTPUT]: {
     currencyId: SupportTokens.Astr,
