@@ -55,10 +55,9 @@ export const AstarSwap = () => {
   const dependentField =
     independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT;
 
-  // TODO: set pair1, pair2
   const deriveValue = useDeriveValue({
-    pair1: "",
-    pair2: "",
+    pair1: inputState[Field.INPUT].currencyId,
+    pair2: inputState[Field.OUTPUT].currencyId,
     amount: typedValue,
   });
 
