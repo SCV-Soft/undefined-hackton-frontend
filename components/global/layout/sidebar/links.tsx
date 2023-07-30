@@ -73,7 +73,11 @@ export const AstarNetworkMenu = () => {
         <MenuLinkItem
           key={`menu-${href}`}
           active={
-            !!pair1 && !!pair2 && href.includes(pair1) && href.includes(pair2)
+            !!pair1 &&
+            !!pair2 &&
+            href.includes(pair1) &&
+            href.includes(pair2) &&
+            href.includes(path)
           }
           {...{ href, label }}
         />
@@ -157,6 +161,7 @@ export const Layer2SwapMenu = ({ target }: LayerSwapMenuProps) => {
 export const BridgeMenu = () => {
   const pair1 = useSearchParams().get("pair1");
   const pair2 = useSearchParams().get("pair2");
+  const path = usePathname();
 
   return (
     <>
@@ -180,7 +185,11 @@ export const BridgeMenu = () => {
         <MenuLinkItem
           key={`menu-${href}`}
           active={
-            !!pair1 && !!pair2 && href.includes(pair1) && href.includes(pair2)
+            !!pair1 &&
+            !!pair2 &&
+            href.includes(pair1) &&
+            href.includes(pair2) &&
+            href.includes(path)
           }
           {...{ href, label }}
         />
