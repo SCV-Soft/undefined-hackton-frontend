@@ -17,7 +17,7 @@ type GetAssetsResponse = Array<{
   tokens: Array<TokenAsset>;
 }>;
 
-export const useAssets = (address: string) => {
+export const useAssets = (address: string, chain: string) => {
   const { data: _data, mutate } = useSWR({ url: "/api" }, ({ url }) => {
     return ky
       .get(url, { searchParams: { addr: address } })
@@ -25,13 +25,14 @@ export const useAssets = (address: string) => {
   });
 
   const data =
-    _data?.map(({ tokens }) => {
-      const token = tokens?.[0];
-      return {
-        symbol: token.symbol,
-        amount: String(token.amount),
-      };
-    }) || [];
+    _data
+      ?.filter((item) => item.chain === chain)?.[0]
+      ?.tokens?.map((token) => {
+        return {
+          symbol: token.symbol,
+          amount: String(token.amount),
+        };
+      }) || [];
 
   return {
     data,
