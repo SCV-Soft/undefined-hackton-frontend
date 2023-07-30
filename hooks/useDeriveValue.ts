@@ -1,9 +1,11 @@
 import ky from "ky";
+import { useEffect } from "react";
 import useSWR from "swr";
+
+import { useDebounce } from "./useDebounce";
 
 import { SupportTokens, VTokens } from "helper/token";
 
-// TODO: add token contract address for pair
 export const getTokenContract = (token: VTokens | SupportTokens) => {
   switch (token) {
     case VTokens.VETH:
@@ -14,11 +16,11 @@ export const getTokenContract = (token: VTokens | SupportTokens) => {
       return "";
     case SupportTokens.Astr:
       return "0x46744EB617FB56ee2364CD15Db9179C92012cb53";
-
     default:
       return "";
   }
 };
+
 interface UseDeriveValueParams {
   pair1: VTokens | SupportTokens;
   pair2: VTokens | SupportTokens;
@@ -35,20 +37,26 @@ export const useDeriveValue = ({
   pair2,
   amount,
 }: UseDeriveValueParams) => {
-  const { data } = useSWR(
-    !!pair1 && !!pair2 && !!amount ? { url: "/swap" } : null,
+  const debouncedAmount = useDebounce(amount, 500);
+
+  const { data, mutate } = useSWR(
+    !!pair1 && !!pair2 && !!debouncedAmount ? { url: "/api/swap" } : null,
     ({ url }) => {
       return ky
         .get(url, {
           searchParams: {
-            from: pair1,
-            to: pair2,
-            amount,
+            from: getTokenContract(pair1),
+            to: getTokenContract(pair2),
+            amount: debouncedAmount,
           },
         })
         .json<SwapResponse>();
     }
   );
+
+  useEffect(() => {
+    mutate();
+  }, [debouncedAmount, mutate]);
 
   return data;
 };

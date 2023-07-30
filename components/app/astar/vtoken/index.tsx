@@ -1,8 +1,9 @@
 "use client";
 
+import { ethers } from "ethers";
 import { useAtomValue } from "jotai";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaSync } from "react-icons/fa";
 
 import { SIGNER_INFOS, WEB3_SIGNER } from "atom/web3/signer/state";
@@ -10,6 +11,7 @@ import { Button, Card, Input, MyInfos, MyInfos2 } from "components/common";
 import { ConnectButton } from "components/global/button/connect";
 import { VTokens } from "helper/token";
 import { getVTokenImage } from "helper/token/images";
+import { useAssets } from "hooks/useAssets";
 import { useDeriveValue } from "hooks/useDeriveValue";
 
 interface VSwapProps {
@@ -33,9 +35,21 @@ export type SwapState = {
   };
 };
 
+const Assets = ({ pair1, pair2 }: VSwapProps) => {
+  const { address } = useAtomValue(SIGNER_INFOS);
+  const { data } = useAssets(address);
+
+  const assets = data.filter(
+    (item) => pair1.includes(item.symbol) || pair2.includes(item.symbol)
+  );
+
+  return (
+    <MyInfos2 address={address} balanceText="Balance on hand" assets={assets} />
+  );
+};
+
 export const VSwap = ({ pair1, pair2 }: VSwapProps) => {
   const signer = useAtomValue(WEB3_SIGNER);
-  const { address } = useAtomValue(SIGNER_INFOS);
 
   const initialState: SwapState = {
     independentField: Field.INPUT,
@@ -62,6 +76,17 @@ export const VSwap = ({ pair1, pair2 }: VSwapProps) => {
       dependentField === Field.INPUT ? deriveValue?.in : deriveValue?.out,
   };
 
+  useEffect(() => {
+    if (!window.ethereum) return;
+
+    (async () => {
+      await window.ethereum.request({
+        method: "wallet_switchEthereumChain",
+        params: [{ chainId: "0x" + (81).toString(16) }],
+      });
+    })();
+  }, []);
+
   const handleTypeInput = (value: string, field: Field) => {
     setInputCurrency((prev) => ({
       ...prev,
@@ -70,7 +95,45 @@ export const VSwap = ({ pair1, pair2 }: VSwapProps) => {
     }));
   };
 
-  const handleSwap = async () => {};
+  const handleSwap = async () => {
+    if (!signer) {
+      return;
+    }
+
+    // 컨트랙트콜 (vETH -> vATOM swap)
+    const astarSwapRouterAddress = "0xD28D77DaB1af0334c130AAAd09525e3762B2D50d";
+    const l2VethAddress = "0xFF847bef92cdF7587341C7F1c8De03A35F4eE44D";
+    const l2VatomAddress = "0xAFc85AbC6DB664dAfF2Dc1007A0428cFCaDb392F";
+
+    // approve first
+    const veth = new ethers.Contract(
+      l2VethAddress,
+      ["function approve(address,uint256)"],
+      signer
+    );
+
+    await (
+      await veth.approve(astarSwapRouterAddress, ethers.constants.MaxUint256)
+    ).wait();
+
+    const router = new ethers.Contract(
+      astarSwapRouterAddress,
+      [
+        "function swapExactTokensForTokens(uint,uint,address[],address,uint) external returns (uint[])",
+      ],
+      signer
+    );
+
+    await (
+      await router.swapExactTokensForTokens(
+        ethers.utils.parseEther(inputState.typedValue), // uint amountIn,
+        0, // uint amountOutMin,
+        [l2VethAddress, l2VatomAddress], // address[] calldata path,
+        await signer.getAddress(), // address to,
+        ethers.constants.MaxUint256 // uint deadline
+      )
+    ).wait();
+  };
 
   // TODO: get balance for each token
 
@@ -78,11 +141,7 @@ export const VSwap = ({ pair1, pair2 }: VSwapProps) => {
     <Card className="flex flex-col gap-4">
       {signer && (
         <div>
-          {/* <MyInfos2
-            address={address}
-            balanceText="Balance on hand"
-            assets={assets}
-          /> */}
+          <Assets {...{ pair1, pair2 }} />
           <div className="divider !mb-1 before:bg-black/50 after:bg-black/50" />
         </div>
       )}
