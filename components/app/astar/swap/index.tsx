@@ -110,7 +110,7 @@ export const AstarSwap = () => {
           <div className="divider !mb-1 before:bg-black/50 after:bg-black/50" />
         </div>
       )}
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-4">
         <Input
           value={formattedAmount[Field.INPUT]}
           onChange={(e) => handleTypeInput(e.target.value, Field.INPUT)}
