@@ -55,78 +55,85 @@ export async function GET(req: any) {
     },
   };
 
-  const obj = [
-    {
-      chain: "ETH",
-      tokens: [
-        {
-          name: "Ethereum",
-          symbol: "ETH",
-          contract: "0xfaCC1871330DB8c7346e7F76514D04857eEEA089",
-          amount: Number(
-            ethers.utils.formatUnits(
-              `${(await contract.ETH.ETH.balanceOf(addr)) || 0}`,
-              18
-            )
-          ),
-        },
-      ],
-    },
-    {
-      chain: "ATOM",
-      tokens: [
-        {
-          name: "Cosmos",
-          symbol: "ATOM",
-          contract: "0xAFc85AbC6DB664dAfF2Dc1007A0428cFCaDb392F".toLowerCase(),
-          amount: Number(
-            ethers.utils.formatUnits(
-              `${(await contract.ATOM.ATOM.balanceOf(addr)) || 0}`,
-              18
-            )
-          ),
-        },
-      ],
-    },
-    {
-      chain: "ASTR",
-      tokens: [
-        {
-          name: "Ethereum",
-          symbol: "ETH",
-          contract: "0xFF847bef92cdF7587341C7F1c8De03A35F4eE44D".toLowerCase(),
-          amount: Number(
-            ethers.utils.formatUnits(
-              `${(await contract.ASTR.ETH.balanceOf(addr)) || 0}`,
-              18
-            )
-          ),
-        },
-        {
-          name: "Cosmos",
-          symbol: "ATOM",
-          contract: "0xAFc85AbC6DB664dAfF2Dc1007A0428cFCaDb392F".toLowerCase(),
-          amount: Number(
-            ethers.utils.formatUnits(
-              `${(await contract.ATOM.ATOM.balanceOf(addr)) || 0}`,
-              18
-            )
-          ),
-        },
-        {
-          name: "Astar",
-          symbol: "ASTR",
-          contract: "0x46744EB617FB56ee2364CD15Db9179C92012cb53".toLowerCase(),
-          amount: Number(
-            ethers.utils.formatUnits(
-              `${(await contract.ASTR.ASTR.balanceOf(addr)) || 0}`,
-              18
-            )
-          ),
-        },
-      ],
-    },
-  ];
+  const fetchBalance = async (chain: any, token: any, address: string) => {
+    const balance = await chain[token].balanceOf(address);
+    return Number(ethers.utils.formatUnits(`${balance || 0}`, 18));
+  };
+
+  const promises = [];
+
+  // ETH
+  promises.push(
+    fetchBalance(contract.ETH, "ETH", addr).then((amount) => {
+      return {
+        chain: "ETH",
+        tokens: [
+          {
+            name: "Ethereum",
+            symbol: "ETH",
+            contract: "0xfaCC1871330DB8c7346e7F76514D04857eEEA089",
+            amount: amount,
+          },
+        ],
+      };
+    })
+  );
+
+  // ATOM
+  promises.push(
+    fetchBalance(contract.ATOM, "ATOM", addr).then((amount) => {
+      return {
+        chain: "ATOM",
+        tokens: [
+          {
+            name: "Cosmos",
+            symbol: "ATOM",
+            contract:
+              "0xAFc85AbC6DB664dAfF2Dc1007A0428cFCaDb392F".toLowerCase(),
+            amount: amount,
+          },
+        ],
+      };
+    })
+  );
+
+  // ASTR
+  promises.push(
+    Promise.all([
+      fetchBalance(contract.ASTR, "ETH", addr),
+      fetchBalance(contract.ASTR, "ATOM", addr),
+      fetchBalance(contract.ASTR, "ASTR", addr),
+    ]).then(([ethAmount, atomAmount, astrAmount]) => {
+      return {
+        chain: "ASTR",
+        tokens: [
+          {
+            name: "Ethereum",
+            symbol: "ETH",
+            contract:
+              "0xFF847bef92cdF7587341C7F1c8De03A35F4eE44D".toLowerCase(),
+            amount: ethAmount,
+          },
+          {
+            name: "Cosmos",
+            symbol: "ATOM",
+            contract:
+              "0xAFc85AbC6DB664dAfF2Dc1007A0428cFCaDb392F".toLowerCase(),
+            amount: atomAmount,
+          },
+          {
+            name: "Astar",
+            symbol: "ASTR",
+            contract:
+              "0x46744EB617FB56ee2364CD15Db9179C92012cb53".toLowerCase(),
+            amount: astrAmount,
+          },
+        ],
+      };
+    })
+  );
+
+  const obj = await Promise.all(promises);
 
   return NextResponse.json(obj);
 }
