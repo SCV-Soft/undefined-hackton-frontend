@@ -12,6 +12,7 @@ import { Button, Card, Input, MyInfos2 } from "components/common";
 import { ConnectButton } from "components/global/button/connect";
 import { SupportTokens, VTokens, getTokenSymbol } from "helper/token";
 import { getTokenImage, getVTokenImage } from "helper/token/images";
+import { useAssets } from "hooks/useAssets";
 import { useDeriveValue } from "hooks/useDeriveValue";
 import { useModal } from "hooks/useModal";
 
@@ -42,11 +43,20 @@ const initialState: SwapState = {
   },
 };
 
+const Assets = () => {
+  const { address } = useAtomValue(SIGNER_INFOS);
+  const { data } = useAssets(address, "ASTR");
+  const assets = data.filter(({ symbol }) => symbol.includes("ATOM"));
+
+  return (
+    <MyInfos2 address={address} balanceText="Balance on hand" assets={assets} />
+  );
+};
+
 export const AstarSwap = () => {
   // TODO: add token select modal
   // TODO: check v token select
   const signer = useAtomValue(WEB3_SIGNER);
-  const { address } = useAtomValue(SIGNER_INFOS);
   const { modal } = useModal();
 
   const [inputState, setInputCurrency] = useState<SwapState>(initialState);
@@ -100,11 +110,7 @@ export const AstarSwap = () => {
     <Card className="flex flex-col gap-4">
       {signer && (
         <div>
-          {/* <MyInfos2
-            address={address}
-            balanceText="Balance on hand"
-            assets={assets}
-          /> */}
+          <Assets />
           <div className="divider !mb-1 before:bg-black/50 after:bg-black/50" />
         </div>
       )}
