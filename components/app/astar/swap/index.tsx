@@ -54,8 +54,6 @@ const Assets = () => {
 };
 
 export const AstarSwap = () => {
-  // TODO: add token select modal
-  // TODO: check v token select
   const signer = useAtomValue(WEB3_SIGNER);
   const { modal } = useModal();
 
