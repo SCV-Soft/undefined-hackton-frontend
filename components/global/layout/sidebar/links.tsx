@@ -171,11 +171,11 @@ export const BridgeMenu = () => {
       {[
         {
           href: "/bridge?pair1=eth&pair2=astr",
-          label: <IconLinkLabel from="ETH" to="Astar" middle="arrow" />,
+          label: <IconLinkLabel from="Ethereum" to="Astar" middle="arrow" />,
         },
         {
           href: "/bridge?pair1=eth&pair2=dot",
-          label: <IconLinkLabel from="ETH" to="Polygon" middle="arrow" />,
+          label: <IconLinkLabel from="Ethereum" to="Polygon" middle="arrow" />,
         },
         {
           href: "/bridge?pair1=atom&pair2=astr",
