@@ -107,7 +107,8 @@ export const MyInfos2 = ({ address, balanceText, assets }: MyInfos2Props) => {
             key={`my-infos-${symbol}-${amount}`}
             className="text-2xl font-semibold"
           >
-            {amount.length > 10 ? amount.slice(0, 10) + "..." : amount} {symbol}
+            {amount.length > 10 ? amount.slice(0, 10) + "..." : amount}{" "}
+            {`v${symbol}`}
           </p>
         ))}
       </div>
