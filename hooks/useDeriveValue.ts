@@ -1,8 +1,10 @@
 import ky from "ky";
 import useSWR from "swr";
 
+import { SupportTokens, VTokens } from "helper/token";
+
 // TODO: add token contract address for pair
-const getTokenContract = (token: string) => {};
+const getTokenContract = (token: VTokens | SupportTokens) => {};
 
 interface UseDeriveValueParams {
   pair1: string;
