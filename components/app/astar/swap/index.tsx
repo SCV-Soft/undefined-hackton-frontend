@@ -1,8 +1,9 @@
 "use client";
 
+import { ethers } from "ethers";
 import { useAtomValue } from "jotai";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaAngleDown, FaSync } from "react-icons/fa";
 
 import { SwapSelectModal } from "./select-modal";
@@ -75,6 +76,17 @@ export const AstarSwap = () => {
       dependentField === Field.INPUT ? deriveValue?.in : deriveValue?.out,
   };
 
+  useEffect(() => {
+    if (!window.ethereum) return;
+
+    (async () => {
+      await window.ethereum.request({
+        method: "wallet_switchEthereumChain",
+        params: [{ chainId: "0x" + (81).toString(16) }],
+      });
+    })();
+  }, []);
+
   const handleTypeInput = (value: string, field: Field) => {
     setInputCurrency((prev) => ({
       ...prev,
@@ -100,7 +112,45 @@ export const AstarSwap = () => {
     );
   };
 
-  const handleSwap = () => {};
+  const handleSwap = async () => {
+    if (!signer) {
+      return;
+    }
+
+    // 컨트랙트콜 (ATOM -> Astar swap)
+    const astarSwapRouterAddress = "0xD28D77DaB1af0334c130AAAd09525e3762B2D50d";
+    const l2VatomAddress = "0xAFc85AbC6DB664dAfF2Dc1007A0428cFCaDb392F";
+    const l2WAstarAddress = "0x46744EB617FB56ee2364CD15Db9179C92012cb53";
+
+    // approve first
+    const vatom = new ethers.Contract(
+      l2VatomAddress,
+      ["function approve(address,uint256)"],
+      signer
+    );
+
+    await (
+      await vatom.approve(astarSwapRouterAddress, ethers.constants.MaxUint256)
+    ).wait();
+
+    const router = new ethers.Contract(
+      astarSwapRouterAddress,
+      [
+        "function swapExactTokensForETH(uint,uint,address[],address,uint) external returns (uint[])",
+      ],
+      signer
+    );
+
+    await (
+      await router.swapExactTokensForETH(
+        ethers.utils.parseEther(inputState.typedValue), // uint amountIn,
+        0, //uint amountOutMin,
+        [l2VatomAddress, l2WAstarAddress], // address[] calldata path,
+        await signer.getAddress(), // address to,
+        ethers.constants.MaxUint256 //uint deadline
+      )
+    ).wait();
+  };
 
   return (
     <Card className="flex flex-col gap-4">
