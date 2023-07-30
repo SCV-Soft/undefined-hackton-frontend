@@ -7,8 +7,8 @@ import { SupportTokens, VTokens } from "helper/token";
 const getTokenContract = (token: VTokens | SupportTokens) => {};
 
 interface UseDeriveValueParams {
-  pair1: string;
-  pair2: string;
+  pair1: VTokens;
+  pair2: SupportTokens;
   amount: string;
 }
 
