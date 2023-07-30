@@ -25,7 +25,8 @@ export async function GET(req: any) {
     ETH: {
       ETH: new ethers.Contract(
         "0xfaCC1871330DB8c7346e7F76514D04857eEEA089",
-        ABI
+        ABI,
+        provider.ETH
       ),
     },
     ATOM: {
@@ -44,7 +45,7 @@ export async function GET(req: any) {
       ETH: new ethers.Contract(
         "0xFF847bef92cdF7587341C7F1c8De03A35F4eE44D",
         ABI,
-        provider.ATOM
+        provider.ASTR
       ),
       ASTR: new ethers.Contract(
         "0x46744EB617FB56ee2364CD15Db9179C92012cb53",
