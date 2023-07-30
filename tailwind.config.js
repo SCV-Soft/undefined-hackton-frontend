@@ -11,10 +11,6 @@ module.exports = {
         primary: "#3454C6",
         secondary: "#E7E2D4",
         tertiary: "#3C3C3C",
-        base: {
-          color: "#E7E2D4",
-          font: "#000000",
-        },
       },
       screens: {
         xs: "480px",
@@ -31,7 +27,9 @@ module.exports = {
     themes: [{
       "mytheme": {
         primary: "#3454C6",
-        "base-100": "#E7E2D4",
+        secondary: "#E7E2D4",
+        tertiary: "#3C3C3C",
+        "base-content": "#3C3C3C",
       }
     },],
   },
