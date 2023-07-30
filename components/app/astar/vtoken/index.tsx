@@ -11,6 +11,7 @@ import { Button, Card, Input, MyInfos, MyInfos2 } from "components/common";
 import { ConnectButton } from "components/global/button/connect";
 import { VTokens } from "helper/token";
 import { getVTokenImage } from "helper/token/images";
+import { useAssets } from "hooks/useAssets";
 import { useDeriveValue } from "hooks/useDeriveValue";
 
 interface VSwapProps {
@@ -34,9 +35,21 @@ export type SwapState = {
   };
 };
 
+const Assets = ({ pair1, pair2 }: VSwapProps) => {
+  const { address } = useAtomValue(SIGNER_INFOS);
+  const { data } = useAssets(address);
+
+  const assets = data.filter(
+    (item) => pair1.includes(item.symbol) || pair2.includes(item.symbol)
+  );
+
+  return (
+    <MyInfos2 address={address} balanceText="Balance on hand" assets={assets} />
+  );
+};
+
 export const VSwap = ({ pair1, pair2 }: VSwapProps) => {
   const signer = useAtomValue(WEB3_SIGNER);
-  const { address } = useAtomValue(SIGNER_INFOS);
 
   const initialState: SwapState = {
     independentField: Field.INPUT,
@@ -128,11 +141,7 @@ export const VSwap = ({ pair1, pair2 }: VSwapProps) => {
     <Card className="flex flex-col gap-4">
       {signer && (
         <div>
-          {/* <MyInfos2
-            address={address}
-            balanceText="Balance on hand"
-            assets={assets}
-          /> */}
+          <Assets {...{ pair1, pair2 }} />
           <div className="divider !mb-1 before:bg-black/50 after:bg-black/50" />
         </div>
       )}
