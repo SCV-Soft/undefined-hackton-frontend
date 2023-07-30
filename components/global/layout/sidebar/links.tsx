@@ -170,15 +170,15 @@ export const BridgeMenu = () => {
       </li>
       {[
         {
-          href: "/bridge?pair1=eth&pair2=astar",
+          href: "/bridge?pair1=eth&pair2=astr",
           label: <IconLinkLabel from="ETH" to="Astar" middle="arrow" />,
         },
         {
-          href: "/bridge?pair1=eth&pair2=polygon",
+          href: "/bridge?pair1=eth&pair2=dot",
           label: <IconLinkLabel from="ETH" to="Polygon" middle="arrow" />,
         },
         {
-          href: "/bridge?pair1=atom&pair2=astar",
+          href: "/bridge?pair1=atom&pair2=astr",
           label: <IconLinkLabel from="Cosmos" to="Astar" middle="arrow" />,
         },
       ].map(({ href, label }) => (
