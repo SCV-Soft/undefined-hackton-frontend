@@ -2,6 +2,7 @@
 
 import { ethers } from "ethers";
 import { useAtomValue, useSetAtom } from "jotai";
+import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 import { Id, toast } from "react-toastify";
 
@@ -12,6 +13,8 @@ import { WEB3_PROVIDERS } from "atom/web3/providers/state";
 import { SIGNER_INFOS, WEB3_SIGNER } from "atom/web3/signer/state";
 import { Button, Card, Infos, Input, MyInfos } from "components/common";
 import { ConnectButton } from "components/global/button/connect";
+import { SupportTokens } from "helper/token";
+import { getTokenImage } from "helper/token/images";
 
 const L2_SWAP_ADDRESS = "0x2a90d4c4B799BD6238661E11920ad2E371046eEb";
 const L2_WETH_ADDRESS = "0xB83508bB360Ad2c8726ba6E1746D03d4BCac387C";
@@ -120,14 +123,12 @@ export const Layer2Swap = () => {
           onChange={(e) => setInput(e.target.value)}
           type="number"
           left={
-            <div className="h-5 w-5">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="https://svgshare.com/i/Bff.svg"
-                title="weth"
-                alt="weth"
-              />
-            </div>
+            <Image
+              src={getTokenImage(SupportTokens.Astr)}
+              alt="ASTR"
+              width={18}
+              height={18}
+            />
           }
           right={
             signer && (
@@ -139,7 +140,7 @@ export const Layer2Swap = () => {
               </button>
             )
           }
-          placeholder="WETH Amount"
+          placeholder="ASTR Amount"
         />
         {!signer ? (
           <ConnectButton />
