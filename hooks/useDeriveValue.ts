@@ -1,6 +1,9 @@
 import ky from "ky";
 import useSWR from "swr";
 
+// TODO: add token contract address for pair
+const getTokenContract = (token: string) => {};
+
 interface UseDeriveValueParams {
   pair1: string;
   pair2: string;
@@ -32,5 +35,5 @@ export const useDeriveValue = ({
     }
   );
 
-  return data?.out;
+  return data;
 };
