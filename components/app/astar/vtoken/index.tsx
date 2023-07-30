@@ -1,8 +1,9 @@
 "use client";
 
+import { ethers } from "ethers";
 import { useAtomValue } from "jotai";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaSync } from "react-icons/fa";
 
 import { SIGNER_INFOS, WEB3_SIGNER } from "atom/web3/signer/state";
@@ -62,6 +63,17 @@ export const VSwap = ({ pair1, pair2 }: VSwapProps) => {
       dependentField === Field.INPUT ? deriveValue?.in : deriveValue?.out,
   };
 
+  useEffect(() => {
+    if (!window.ethereum) return;
+
+    (async () => {
+      await window.ethereum.request({
+        method: "wallet_switchEthereumChain",
+        params: [{ chainId: "0x" + (81).toString(16) }],
+      });
+    })();
+  }, []);
+
   const handleTypeInput = (value: string, field: Field) => {
     setInputCurrency((prev) => ({
       ...prev,
@@ -70,7 +82,45 @@ export const VSwap = ({ pair1, pair2 }: VSwapProps) => {
     }));
   };
 
-  const handleSwap = async () => {};
+  const handleSwap = async () => {
+    if (!signer) {
+      return;
+    }
+
+    // 컨트랙트콜 (vETH -> vATOM swap)
+    const astarSwapRouterAddress = "0xD28D77DaB1af0334c130AAAd09525e3762B2D50d";
+    const l2VethAddress = "0xFF847bef92cdF7587341C7F1c8De03A35F4eE44D";
+    const l2VatomAddress = "0xAFc85AbC6DB664dAfF2Dc1007A0428cFCaDb392F";
+
+    // approve first
+    const veth = new ethers.Contract(
+      l2VethAddress,
+      ["function approve(address,uint256)"],
+      signer
+    );
+
+    await (
+      await veth.approve(astarSwapRouterAddress, ethers.constants.MaxUint256)
+    ).wait();
+
+    const router = new ethers.Contract(
+      astarSwapRouterAddress,
+      [
+        "function swapExactTokensForTokens(uint,uint,address[],address,uint) external returns (uint[])",
+      ],
+      signer
+    );
+
+    await (
+      await router.swapExactTokensForTokens(
+        ethers.utils.parseEther(inputState.typedValue), // uint amountIn,
+        0, // uint amountOutMin,
+        [l2VethAddress, l2VatomAddress], // address[] calldata path,
+        await signer.getAddress(), // address to,
+        ethers.constants.MaxUint256 // uint deadline
+      )
+    ).wait();
+  };
 
   // TODO: get balance for each token
 
