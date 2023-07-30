@@ -19,7 +19,7 @@ export default function Layer2Page({ searchParams }: Layer2PageProps) {
             <span className="flex items-center gap-2 text-lg">Astar</span>
           </div>
         }
-        subtitle="Swap WETH to vETH the next generation LSD Token"
+        subtitle="Swap ASTR to vETH the next generation LSD Token"
       />
       <Layer2Swap />
     </div>
