@@ -20,10 +20,7 @@ const TokenListItem = ({ symbol, name, onClick }: TokenListItemProps) => {
         <button
           type="submit"
           className="flex w-full items-center gap-2 text-left"
-          onClick={() => {
-            console.log("test");
-            onClick(token);
-          }}
+          onClick={() => onClick(token)}
         >
           <Image src={getTokenImage(token)} alt={`${symbol} logo`} />
           <div className="flex flex-col p-2 font-semibold">
