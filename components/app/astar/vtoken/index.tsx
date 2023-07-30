@@ -158,7 +158,7 @@ export const VSwap = ({ pair1, pair2 }: VSwapProps) => {
               alt="vtoken1"
             />
           }
-          placeholder={`v${pair1?.toUpperCase()} Amount`}
+          placeholder={`${pair1} Amount`}
         />
         <div className="mx-auto text-black">
           <FaSync />
@@ -175,7 +175,7 @@ export const VSwap = ({ pair1, pair2 }: VSwapProps) => {
               alt="vtoken1"
             />
           }
-          placeholder={`v${pair2?.toUpperCase()} Amount`}
+          placeholder={`${pair2} Amount`}
         />
         {!signer ? (
           <ConnectButton />
