@@ -13,7 +13,7 @@ import { WEB3_PROVIDERS } from "atom/web3/providers/state";
 import { SIGNER_INFOS, WEB3_SIGNER } from "atom/web3/signer/state";
 import { Button, Card, Infos, Input, MyInfos } from "components/common";
 import { ConnectButton } from "components/global/button/connect";
-import LogoSvg from "public/logo.png";
+import VATOM from "public/icon/vatom.svg";
 
 const COSMOS_VATOM_ADDRESS = "0xAFc85AbC6DB664dAfF2Dc1007A0428cFCaDb392F";
 const COSMOS_BRIDGE_ADDRESS = "0x6A7222164a53f78Cc0F84D2658889f1d16Ee6086";
@@ -137,8 +137,7 @@ export const CosmosAstarSwap = () => {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           type="number"
-          // !FIXME: update this
-          left={<Image src={LogoSvg} width={16} height={16} alt="v-ether" />}
+          left={<Image src={VATOM} width={16} height={16} alt="v-ether" />}
           right={
             signer && (
               <button
