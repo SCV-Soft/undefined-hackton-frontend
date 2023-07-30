@@ -1,10 +1,9 @@
 import { redirect } from "next/navigation";
 import { FaSync } from "react-icons/fa";
 
-import { CosmosPolygonVSwap } from "components/app/astar/vtoken/atom-dot";
-import { ETHCosmosVSwap } from "components/app/astar/vtoken/eth-atom";
-import { ETHPolygonVSwap } from "components/app/astar/vtoken/eth-dot";
+import { VSwap } from "components/app/astar/vtoken";
 import { Header } from "components/common";
+import { VTokens } from "helper/token";
 
 interface AstarPageProps {
   searchParams: {
@@ -13,27 +12,20 @@ interface AstarPageProps {
   };
 }
 
-const AstarPageContent = ({
-  pair1,
-  pair2,
-}: {
-  pair1: string;
-  pair2: string;
-}) => {
-  switch (`${pair1}-${pair2}`) {
-    case "eth-atom":
-      return <ETHCosmosVSwap {...{ pair1, pair2 }} />;
-    case "eth-dot":
-      return <ETHPolygonVSwap />;
-    case "atom-dot":
-      return <CosmosPolygonVSwap />;
-    default:
-      return redirect("/astar?pair1=eth&pair2=atom");
-  }
-};
-
 export default function AstarPage({ searchParams }: AstarPageProps) {
-  const { pair1, pair2 } = searchParams ?? {};
+  const { pair1: _pair1, pair2: _pair2 } = searchParams ?? {};
+
+  const upperPair1 = _pair1?.toUpperCase();
+  const upperPair2 = _pair2?.toUpperCase();
+
+  const pair1 = Object.values(VTokens).find((token) =>
+    token.includes(upperPair1)
+  );
+  const pair2 = Object.values(VTokens).find((token) =>
+    token.includes(upperPair2)
+  );
+
+  if (!pair1 || !pair2) return redirect("/astar?pair1=eth&pair2=atom");
 
   return (
     <div className="flex flex-col gap-4">
@@ -42,14 +34,14 @@ export default function AstarPage({ searchParams }: AstarPageProps) {
           <div className="flex items-end gap-4">
             <span>Astar Swap</span>
             <span className="flex items-center gap-2 text-lg">
-              v{pair1?.toUpperCase()}
-              <FaSync />v{pair2?.toUpperCase()}
+              v{upperPair1}
+              <FaSync />v{upperPair2}
             </span>
           </div>
         }
-        subtitle={`Swap ${pair1?.toUpperCase()} to v${pair2?.toUpperCase()} the next generation LSD Token`}
+        subtitle={`Swap ${upperPair1} to v${upperPair2} the next generation LSD Token`}
       />
-      <AstarPageContent {...{ pair1, pair2 }} />
+      <VSwap {...{ pair1, pair2 }} />;
     </div>
   );
 }
