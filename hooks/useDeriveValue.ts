@@ -1,4 +1,5 @@
 import ky from "ky";
+import { useEffect } from "react";
 import useSWR from "swr";
 
 import { useDebounce } from "./useDebounce";
@@ -38,7 +39,7 @@ export const useDeriveValue = ({
 }: UseDeriveValueParams) => {
   const debouncedAmount = useDebounce(amount, 500);
 
-  const { data } = useSWR(
+  const { data, mutate } = useSWR(
     !!pair1 && !!pair2 && !!debouncedAmount ? { url: "/api/swap" } : null,
     ({ url }) => {
       return ky
@@ -52,6 +53,10 @@ export const useDeriveValue = ({
         .json<SwapResponse>();
     }
   );
+
+  useEffect(() => {
+    mutate();
+  }, [debouncedAmount, mutate]);
 
   return data;
 };
